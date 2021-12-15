@@ -1,5 +1,5 @@
 // starting point at y: 0 x: 0
-const arr = [
+export const arr = [
   "forward 8",
   "forward 9",
   "forward 9",
@@ -1023,4 +1023,4 @@ const getXYmultiplied = (arr) => {
   return y * x;
 };
 
-console.log(getXYmultiplied(arr));
+// console.log(getXYmultiplied(arr));
