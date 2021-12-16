@@ -1024,3 +1024,5 @@ const getXYmultiplied = (arr) => {
 };
 
 // console.log(getXYmultiplied(arr));
+
+
