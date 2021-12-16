@@ -2,7 +2,7 @@
 // generate two binaries gamma rate and epsilon rate
 // power consumption = gamma rate * epsilon rate
 
-const arr = [
+export const arr = [
   "101010011010",
   "101111111001",
   "100100100000",
@@ -1005,7 +1005,7 @@ const arr = [
   "000001101000",
 ];
 
-const getTransformedStringArr = (arr) => {
+export const getTransformedStringArr = (arr) => {
   let stringArr = [];
 
   for (let l = 0; l < arr[0].length; l++) {
@@ -1044,9 +1044,9 @@ const getPowerConsumption = (subArr) => {
     .forEach((bit) =>
       bit == "1" ? (epsilonRate += "0") : (epsilonRate += "1")
     );
-  console.log(gammaRate);
-  console.log(epsilonRate);
+  // console.log(gammaRate);
+  // console.log(epsilonRate);
   return parseInt(gammaRate, 2) * parseInt(epsilonRate, 2);
 };
 
-console.log(getPowerConsumption(subArr));
+// console.log(getPowerConsumption(subArr));
