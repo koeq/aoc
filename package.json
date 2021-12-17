@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/koeq/aoc/issues"
   },
-  "homepage": "https://github.com/koeq/aoc#readme"
+  "homepage": "https://github.com/koeq/aoc#readme",
+  "dependencies": {
+    "n-readlines": "^1.0.1"
+  }
 }
