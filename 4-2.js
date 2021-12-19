@@ -1,7 +1,7 @@
 import { numInput, boards, columnsToRows } from "./4-1.js";
 
-const log = (input) => {
-  console.log(input);
+export const log = (input, ...args) => {
+  console.log(input, ...args);
 };
 
 const findWinningBoard = (boards, numInput) => {
@@ -68,4 +68,4 @@ const getLastWinningBoard = (boards, lastIndex, winningNums) => {
   console.log(sum * parseInt(winningNums[winningNums.length - 1]));
 };
 
-getLastWinningBoard(boards, lastIndex, result.winningNums);
+// getLastWinningBoard(boards, lastIndex, result.winningNums);
