@@ -6,7 +6,7 @@ import lineByLine from "n-readlines";
 
 const liner = new lineByLine("./input6.txt");
 
-const input = liner
+export const input = liner
   .next()
   .toString("utf-8")
   .split(",")
@@ -40,4 +40,4 @@ const reproduction = (days, input) => {
   console.log(temp.length);
 };
 
-reproduction(80, input);
+// reproduction(80, input);
