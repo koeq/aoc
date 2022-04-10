@@ -1,3 +1,4 @@
 node_modules
-input4.txt
+dist
+inputs
 tsconfig.json
