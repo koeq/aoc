@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/koeq/aoc#readme",
   "dependencies": {
+    "@types/n-readlines": "^1.0.3",
     "n-readlines": "^1.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.3"
   }
 }
