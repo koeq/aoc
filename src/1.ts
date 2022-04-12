@@ -1,4 +1,4 @@
-import { getInput, liner } from "../file-reader.js";
+import { getInput, liner } from "./utils/file-reader";
 
 let input: string[] = getInput(liner);
 

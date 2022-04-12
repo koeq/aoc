@@ -4,9 +4,9 @@
   "description": "",
   "main": "1-1.js",
   "scripts": {
+    "build": "ts-node src/1.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koeq/aoc.git"
@@ -19,7 +19,8 @@
   "homepage": "https://github.com/koeq/aoc#readme",
   "dependencies": {
     "@types/n-readlines": "^1.0.3",
-    "n-readlines": "^1.0.1"
+    "n-readlines": "^1.0.1",
+    "ts-node": "^10.7.0"
   },
   "devDependencies": {
     "typescript": "^4.6.3"
