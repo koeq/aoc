@@ -1,13 +1,7 @@
-import { getInput, liner } from "./utils/file-reader";
+import { toNum } from "./utils/toNum";
+import { getInput } from "./utils/file-reader";
 
-let input: string[] = getInput(liner);
-
-// UTILS
-const toNum = (input: string[]): number[] => {
-  const mapped = input.map((element) => parseInt(element));
-
-  return mapped;
-};
+let input: string[] = getInput(1);
 
 const mappedInput = toNum(input);
 

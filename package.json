@@ -4,7 +4,8 @@
   "description": "",
   "main": "1-1.js",
   "scripts": {
-    "build": "ts-node src/1.ts",
+    "build1": "ts-node src/1.ts",
+    "build2": "ts-node src/2.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

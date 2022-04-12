@@ -1,9 +1,7 @@
 import lineByLine from "n-readlines";
 
-export const liner = new lineByLine(
-  "./inputs/input1.txt"
-);
-export const getInput = (liner: lineByLine) => {
+export const getInput = (fileNum: number) => {
+  const liner = new lineByLine(`./inputs/input${fileNum}.txt`);
   const input = [];
   let line;
   while ((line = liner.next())) {
