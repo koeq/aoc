@@ -3,6 +3,7 @@ import { toNum } from "./utils/toNum";
 
 const input = getInput(2);
 
+// 2.1
 const calculatePosition = (input: string[]) => {
   let x = 0;
   let y = 0;
@@ -43,3 +44,27 @@ const calculatePosition = (input: string[]) => {
 };
 
 // console.log(calculatePosition(input));
+
+// 2.2
+
+const calculateAimedPosition = (input: string[]) => {
+  let x = 0;
+  let y = 0;
+  let aim = 0;
+
+  for (const directionAmount of input) {
+    const splittedDirection = directionAmount.split(" ");
+    const amount = parseInt(splittedDirection[1]);
+    const direction = splittedDirection[0];
+
+    direction === "forward"
+      ? ((x += amount), (y += aim * amount))
+      : direction === "down"
+      ? (aim += amount)
+      : (aim -= amount);
+  }
+
+  return x * y;
+};
+
+// console.log(calculateAimedPosition(input));
