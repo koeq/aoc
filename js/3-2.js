@@ -15,7 +15,9 @@ const countNums = (arr, index) => {
 
 const getOxygen = (arr) => {
   // make a copy of arr to mutate
-  let array = [...arr];
+  // unperformant use slice instead
+  // let array = [...arr];
+  let array = arr.slice();
   let index = 0;
   while (array.length > 1) {
     const transformedArr = transformArr(array);
@@ -54,6 +56,11 @@ const getCo2 = (arr) => {
 const oxygenRating = getOxygen(arr);
 const co2Rating = getCo2(arr);
 
-console.log(`oxygenRating: ${oxygenRating}, co2Rating: ${co2Rating}`);
+console.log(
+  `oxygenRating: ${parseInt(co2Rating, 2)}, co2Rating: ${parseInt(
+    oxygenRating,
+    2
+  )}`
+);
 
 console.log(`result: ${parseInt(co2Rating, 2) * parseInt(oxygenRating, 2)}`);
