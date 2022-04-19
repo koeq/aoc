@@ -100,7 +100,7 @@ const getWinners = (
   throw new Error("There is no winning board!");
 };
 
-const winner = getWinners(boards, nums);
+// const winner = getWinners(boards, nums);
 
 const getRemainingBoardSum = (
   board: (number | string | undefined)[][]
@@ -118,6 +118,66 @@ const getRemainingBoardSum = (
   return sum;
 };
 
-console.log(winner.board);
-console.log(winner.num);
-console.log(getRemainingBoardSum(winner.board) * winner.num);
+// console.log(winner.board);
+// console.log(winner.num);
+// console.log(getRemainingBoardSum(winner.board) * winner.num);
+
+const getLastWinners = (
+  boardsInput: (number | string | undefined)[][][],
+  nums: number[]
+): Winners => {
+  let boards: (number | string | undefined)[][][] = boardsInput.slice();
+
+  let winningBoards: number[] = [];
+
+  for (const num of nums) {
+    for (let boardIndex = 0; boardIndex < boards.length; boardIndex++) {
+      // iterate rows in boards[boardIndex]
+      for (let rowIndex = 0; rowIndex < boards[boardIndex].length; rowIndex++) {
+        // iterate entrys in rows
+        for (
+          let entryIndex = 0;
+          entryIndex < boards[boardIndex][rowIndex].length;
+          entryIndex++
+        ) {
+          let entry = boards[boardIndex][rowIndex][entryIndex];
+          if (entry === num) {
+            boards[boardIndex][rowIndex][entryIndex] = "x";
+          }
+        }
+        if (
+          isWinningRow(boards[boardIndex][rowIndex]) &&
+          !winningBoards.includes(boardIndex)
+        ) {
+          if (boards.length - winningBoards.length === 1) {
+            return {
+              board: boards[boardIndex],
+              num: num,
+            };
+          }
+          winningBoards.push(boardIndex);
+        }
+      }
+      if (
+        isWinningColumn(boards[boardIndex]) &&
+        !winningBoards.includes(boardIndex)
+      ) {
+        if (boards.length - winningBoards.length === 1) {
+          return {
+            board: boards[boardIndex],
+            num: num,
+          };
+        }
+        winningBoards.push(boardIndex);
+      }
+    }
+  }
+
+  throw new Error("There is no winning board!");
+};
+
+const lastWinner = getLastWinners(boards, nums);
+
+console.log(lastWinner.board);
+console.log(lastWinner.num);
+console.log(getRemainingBoardSum(lastWinner.board) * lastWinner.num);
