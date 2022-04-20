@@ -1,5 +1,5 @@
 import { toNum } from "./utils/toNum";
-import { getInput } from "./utils/file-reader";
+import { getInput } from "./utils/fileReader";
 
 let input: string[] = getInput(1);
 

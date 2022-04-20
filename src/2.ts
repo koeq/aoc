@@ -1,4 +1,4 @@
-import { getInput } from "./utils/file-reader";
+import { getInput } from "./utils/fileReader";
 import { toNum } from "./utils/toNum";
 
 const input = getInput(2);

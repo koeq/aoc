@@ -1,5 +1,5 @@
 import { create } from "ts-node";
-import { getInput } from "./utils/file-reader";
+import { getInput } from "./utils/fileReader";
 
 // TEST-INPUT
 // let input = [

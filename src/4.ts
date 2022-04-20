@@ -1,4 +1,4 @@
-import { getBingoInput } from "./utils/file-reader";
+import { getBingoInput } from "./utils/fileReader";
 
 // TEST-INPUT
 // const nums = [
@@ -100,7 +100,7 @@ const getWinners = (
   throw new Error("There is no winning board!");
 };
 
-// const winner = getWinners(boards, nums);
+const winner = getWinners(boards, nums);
 
 const getRemainingBoardSum = (
   board: (number | string | undefined)[][]
