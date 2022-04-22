@@ -16,6 +16,8 @@ interface BingoInput {
   nums: number[];
 }
 
+
+// 4
 export const getBingoInput = () => {
   const liner = new lineByLine(`./inputs/input4.txt`);
   let boardsInput: number[][] = [];

@@ -1,26 +1,37 @@
+import { getInput } from "./utils/fileReader";
+
 // test-input
-const input = [
-  [0, 9],
-  [5, 9],
-  [8, 0],
-  [0, 8],
-  [9, 4],
-  [3, 4],
-  [2, 2],
-  [2, 1],
-  [7, 0],
-  [7, 4],
-  [6, 4],
-  [2, 0],
-  [0, 9],
-  [2, 9],
-  [3, 4],
-  [1, 4],
-  [0, 0],
-  [8, 8],
-  [5, 5],
-  [8, 2],
-];
+// const input = [
+//   [0, 9],
+//   [5, 9],
+//   [8, 0],
+//   [0, 8],
+//   [9, 4],
+//   [3, 4],
+//   [2, 2],
+//   [2, 1],
+//   [7, 0],
+//   [7, 4],
+//   [6, 4],
+//   [2, 0],
+//   [0, 9],
+//   [2, 9],
+//   [3, 4],
+//   [1, 4],
+//   [0, 0],
+//   [8, 8],
+//   [5, 5],
+//   [8, 2],
+// ];
+
+const rawInput = getInput(5);
+
+// WTF
+const input = rawInput
+  .map((line) => line.split("->"))
+  .flat()
+  .map((str) => str.split(","))
+  .map((arr) => [parseInt(arr[0]), parseInt(arr[1])]);
 
 const getCoveredCoordinates = (input: number[][]) => {
   const coveredCoordinates: number[][] = [];
@@ -53,8 +64,6 @@ const getCoveredCoordinates = (input: number[][]) => {
   return coveredCoordinates;
 };
 
-const coveredCoordinates = getCoveredCoordinates(input);
-
 interface CoordinateCount {
   [key: string]: number;
 }
@@ -71,8 +80,6 @@ const getCoordinateCount = (coveredCoordinates: number[][]) => {
   return coordinateCount;
 };
 
-const coordinateCount = getCoordinateCount(coveredCoordinates);
-
 const getDuplicates = (coordinateCount: CoordinateCount) => {
   let counter = 0;
 
@@ -84,4 +91,6 @@ const getDuplicates = (coordinateCount: CoordinateCount) => {
   return counter;
 };
 
+const coveredCoordinates = getCoveredCoordinates(input);
+const coordinateCount = getCoordinateCount(coveredCoordinates);
 console.log(getDuplicates(coordinateCount));
