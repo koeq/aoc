@@ -7,8 +7,8 @@
     "build1": "ts-node src/1.ts",
     "build2": "ts-node src/2.ts",
     "build3": "ts-node src/3.ts",
-    "build4": "ts-node src/4.ts"
-    
+    "build4": "ts-node src/4.ts",
+    "build5": "ts-node src/5.ts"
   },
   "repository": {
     "type": "git",

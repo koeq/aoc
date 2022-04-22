@@ -65,6 +65,7 @@ const getWinners = (
   nums: number[]
 ): Winners => {
   let boards: (number | string | undefined)[][][] = boardsInput.slice();
+  console.log(performance.now());
 
   for (const num of nums) {
     for (const board of boards) {
@@ -120,8 +121,9 @@ const getRemainingBoardSum = (
 
 // console.log(winner.board);
 // console.log(winner.num);
-// console.log(getRemainingBoardSum(winner.board) * winner.num);
+console.log(getRemainingBoardSum(winner.board) * winner.num);
 
+// 4.2
 const getLastWinners = (
   boardsInput: (number | string | undefined)[][][],
   nums: number[]
@@ -176,8 +178,8 @@ const getLastWinners = (
   throw new Error("There is no winning board!");
 };
 
-const lastWinner = getLastWinners(boards, nums);
+// const lastWinner = getLastWinners(boards, nums);
 
-console.log(lastWinner.board);
-console.log(lastWinner.num);
-console.log(getRemainingBoardSum(lastWinner.board) * lastWinner.num);
+// console.log(lastWinner.board);
+// console.log(lastWinner.num);
+// console.log(getRemainingBoardSum(lastWinner.board) * lastWinner.num);
