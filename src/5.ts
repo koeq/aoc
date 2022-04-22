@@ -28,16 +28,19 @@ const rawInput = getInput(5);
 
 // WTF
 const input = rawInput
-  .map((line) => line.split("->"))
-  .flat()
-  .map((str) => str.split(","))
-  .map((arr) => [parseInt(arr[0]), parseInt(arr[1])]);
+  .flatMap((line) => line.split("->"))
+  .map((coordinate) =>
+    coordinate
+      .trim()
+      .split(",")
+      .map((num) => parseInt(num))
+  );
 
 const getCoveredCoordinates = (input: number[][]) => {
   const coveredCoordinates: number[][] = [];
 
   let i = 0;
-  while (i < input.length) {
+  while (i < input.length - 1) {
     const x1 = input[i][0];
     const y1 = input[i][1];
     const x2 = input[i + 1][0];
@@ -45,8 +48,9 @@ const getCoveredCoordinates = (input: number[][]) => {
 
     // console.log(`i: ${i}`);
     // console.log(`x1: ${x1} y1: ${y1} x2: ${x2} y2: ${y2} `);
+
     if (x1 !== x2 && y1 !== y2) {
-      i += 2;
+      i += 1;
       continue;
     }
     if (x1 !== x2) {

@@ -4,11 +4,12 @@
   "description": "",
   "main": "1-1.js",
   "scripts": {
-    "build1": "ts-node src/1.ts",
-    "build2": "ts-node src/2.ts",
-    "build3": "ts-node src/3.ts",
-    "build4": "ts-node src/4.ts",
-    "build5": "ts-node src/5.ts"
+    "1": "ts-node src/1.ts",
+    "2": "ts-node src/2.ts",
+    "3": "ts-node src/3.ts",
+    "4": "ts-node src/4.ts",
+    "5": "ts-node src/5.ts",
+    "fib": "ts-node src/utils/fib.ts"
   },
   "repository": {
     "type": "git",
