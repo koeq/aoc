@@ -23,6 +23,7 @@ import { getInput } from "./utils/fileReader";
 //   [5, 5],
 //   [8, 2],
 // ];
+
 console.time("track");
 const rawInput = getInput(5);
 
@@ -35,7 +36,7 @@ const input = rawInput
       .map((num) => parseInt(num))
   );
 
-// IMPLEMENT COUNTER DIRECTLY
+// 5.1
 type amount = number;
 
 interface CoveredCoordinates {
@@ -53,10 +54,9 @@ const getCoveredCoordinates = (input: number[][]) => {
     const y2 = input[i + 1][1];
 
     if (x1 !== x2 && y1 !== y2) {
-      i += 1;
+      i += 2;
       continue;
-    }
-    if (x1 !== x2) {
+    } else if (x1 !== x2) {
       for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
         if (coveredCoordinates[`${x}, ${y1}`]) {
           coveredCoordinates[`${x}, ${y1}`]++;
@@ -90,6 +90,88 @@ const getDuplicates = (coveredCoordinates: CoveredCoordinates) => {
   return duplicates;
 };
 
-const coveredCoordinates = getCoveredCoordinates(input);
+// const coveredCoordinates = getCoveredCoordinates(input);
+// console.log(getDuplicates(coveredCoordinates));
+// console.timeEnd("track");
+
+// 5.2
+
+const getCoveredCoordinatesWithDiagonals = (input: number[][]) => {
+  const coveredCoordinates: CoveredCoordinates = {};
+
+  let i = 0;
+  while (i < input.length - 1) {
+    const x1 = input[i][0];
+    const y1 = input[i][1];
+    const x2 = input[i + 1][0];
+    const y2 = input[i + 1][1];
+
+    if (x1 !== x2 && y1 !== y2) {
+      if (x1 < x2) {
+        // CASE x1 < x2 & y1 < y2
+        if (y1 < y2) {
+          for (let i = 0; x1 + i <= x2; i++) {
+            if (coveredCoordinates[`${x1 + i}, ${y1 + i}`]) {
+              coveredCoordinates[`${x1 + i}, ${y1 + i}`]++;
+            } else {
+              coveredCoordinates[`${x1 + i}, ${y1 + i}`] = 1;
+            }
+          }
+          // CASE x1 < x2 & y1 > y2
+        } else {
+          for (let i = 0; x1 + i <= x2; i++) {
+            if (coveredCoordinates[`${x1 + i}, ${y1 - i}`]) {
+              coveredCoordinates[`${x1 + i}, ${y1 - i}`]++;
+            } else {
+              coveredCoordinates[`${x1 + i}, ${y1 - i}`] = 1;
+            }
+          }
+        }
+      } else {
+        // CASE x1 > x2 & y1 < y2
+        if (y1 < y2) {
+          for (let i = 0; x2 + i <= x1; i++) {
+            if (coveredCoordinates[`${x1 - i}, ${y1 + i}`]) {
+              coveredCoordinates[`${x1 - i}, ${y1 + i}`]++;
+            } else {
+              coveredCoordinates[`${x1 - i}, ${y1 + i}`] = 1;
+            }
+          }
+          // CASE x1 > x2 & y1 > y2
+        } else {
+          for (let i = 0; x2 + i <= x1; i++) {
+            if (coveredCoordinates[`${x1 - i}, ${y1 - i}`]) {
+              coveredCoordinates[`${x1 - i}, ${y1 - i}`]++;
+            } else {
+              coveredCoordinates[`${x1 - i}, ${y1 - i}`] = 1;
+            }
+          }
+        }
+      }
+
+      i += 2;
+    } else if (x1 !== x2) {
+      for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+        if (coveredCoordinates[`${x}, ${y1}`]) {
+          coveredCoordinates[`${x}, ${y1}`]++;
+        } else {
+          coveredCoordinates[`${x}, ${y1}`] = 1;
+        }
+      }
+      i += 2;
+    } else if (y1 !== y2) {
+      for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+        if (coveredCoordinates[`${x1}, ${y}`]) {
+          coveredCoordinates[`${x1}, ${y}`]++;
+        } else {
+          coveredCoordinates[`${x1}, ${y}`] = 1;
+        }
+      }
+      i += 2;
+    }
+  }
+  return coveredCoordinates;
+};
+
+const coveredCoordinates = getCoveredCoordinatesWithDiagonals(input);
 console.log(getDuplicates(coveredCoordinates));
-console.timeEnd("track");
