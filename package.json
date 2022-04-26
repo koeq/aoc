@@ -9,6 +9,7 @@
     "3": "ts-node src/3.ts",
     "4": "ts-node src/4.ts",
     "5": "ts-node src/5.ts",
+    "6": "ts-node src/6.ts",
     "fib": "ts-node src/utils/fib.ts"
   },
   "repository": {
