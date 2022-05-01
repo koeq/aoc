@@ -12,6 +12,7 @@
     "6": "ts-node src/6.ts",
     "7": "ts-node src/7.ts",
     "8": "ts-node src/8.ts",
+    "9": "ts-node src/9.ts",
     "fib": "ts-node src/utils/fib.ts"
   },
   "repository": {
