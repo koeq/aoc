@@ -63,23 +63,6 @@ const lowPoints = getLowPoints(input);
 
 // 8.2
 
-// utils
-
-const notVisitedBefore = (
-  point: { row: number; column: number },
-  visitedPoints: Point[]
-): boolean => {
-  if (
-    visitedPoints.some(
-      ({ row, column }) => row === point.row && column === point.column
-    )
-  ) {
-    return false;
-  }
-
-  return true;
-};
-
 interface Point {
   row: number;
   column: number;
@@ -89,50 +72,32 @@ interface Point {
 const countBasinLength = (
   rows: number,
   columns: number,
-  visitedPoints: Point[]
+  basinLength: { value: number }
 ) => {
-  const point = { row: rows, column: columns, value: input[rows][columns] };
+  basinLength.value++;
+  input[rows][columns] = 9;
 
-  visitedPoints.push(point);
-
-  if (
-    rows - 1 >= 0 &&
-    notVisitedBefore({ row: rows - 1, column: columns }, visitedPoints) &&
-    input[rows - 1][columns] !== 9
-  ) {
-    countBasinLength(rows - 1, columns, visitedPoints);
+  if (rows - 1 >= 0 && input[rows - 1][columns] !== 9) {
+    countBasinLength(rows - 1, columns, basinLength);
   }
-  if (
-    rows + 1 < input.length &&
-    notVisitedBefore({ row: rows + 1, column: columns }, visitedPoints) &&
-    input[rows + 1][columns] !== 9
-  ) {
-    countBasinLength(rows + 1, columns, visitedPoints);
+  if (rows + 1 < input.length && input[rows + 1][columns] !== 9) {
+    countBasinLength(rows + 1, columns, basinLength);
   }
-  if (
-    columns - 1 >= 0 &&
-    notVisitedBefore({ row: rows, column: columns - 1 }, visitedPoints) &&
-    input[rows][columns - 1] !== 9
-  ) {
-    countBasinLength(rows, columns - 1, visitedPoints);
+  if (columns - 1 >= 0 && input[rows][columns - 1] !== 9) {
+    countBasinLength(rows, columns - 1, basinLength);
   }
-  if (
-    columns + 1 < input[rows].length &&
-    notVisitedBefore({ row: rows, column: columns + 1 }, visitedPoints) &&
-    input[rows][columns + 1] !== 9
-  ) {
-    countBasinLength(rows, columns + 1, visitedPoints);
+  if (columns + 1 < input[rows].length && input[rows][columns + 1] !== 9) {
+    countBasinLength(rows, columns + 1, basinLength);
   }
 };
 
 const getBasinLength = (lowPoints: LowPoint[]) => {
   const basinLengths: number[] = [];
   for (const lowPoint of lowPoints) {
-    // lowPoint is included in basinLength
-    const visitedPoints: Point[] = [];
+    const basinLength: { value: number } = { value: 0 };
     let { rows, columns } = lowPoint;
-    countBasinLength(rows, columns, visitedPoints);
-    basinLengths.push(visitedPoints.length);
+    countBasinLength(rows, columns, basinLength);
+    basinLengths.push(basinLength.value);
   }
 
   return basinLengths;
