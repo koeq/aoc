@@ -1,5 +1,5 @@
-import { getInput } from "./utils/fileReader";
-import { equalChars } from "./utils/equalChars";
+import { getInput } from "./utils/file-reader";
+import { equalChars } from "./utils/equal-chars";
 
 // 8.1
 const rawInput = getInput(8);

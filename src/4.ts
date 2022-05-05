@@ -1,4 +1,4 @@
-import { getBingoInput } from "./utils/fileReader";
+import { getBingoInput } from "./utils/file-reader";
 
 // TEST-INPUT
 // const nums = [

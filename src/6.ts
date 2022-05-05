@@ -1,4 +1,4 @@
-import { getInput } from "./utils/fileReader";
+import { getInput } from "./utils/file-reader";
 
 // TEST INPUT
 // const rawInput = ["3, 4, 3, 1, 2"];

@@ -1,4 +1,4 @@
-import { getInput } from "./utils/fileReader";
+import { getInput } from "./utils/file-reader";
 
 // TEST INPUT
 // const input = [

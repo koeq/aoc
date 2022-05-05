@@ -1,5 +1,5 @@
-import { getInput } from "./utils/fileReader";
-import { toNum } from "./utils/toNum";
+import { getInput } from "./utils/file-reader";
+import { toNum } from "./utils/to-num";
 
 const input = getInput(2);
 
