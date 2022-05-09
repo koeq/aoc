@@ -121,6 +121,7 @@ const flash = (point: Point, input: number[][]): number[][] => {
   return input;
 };
 
+// 10.1
 const step = (steps: number, input: number[][]) => {
   // simulate steps
   for (let i = 0; i < steps; i++) {
@@ -142,5 +143,35 @@ const step = (steps: number, input: number[][]) => {
   return input;
 };
 
-const stepped = step(100, input);
-console.log(counter);
+// const stepped = step(100, input);
+// console.log(counter);
+
+// 10.2
+
+const allFlashed = (input: number[][]): boolean => {
+  return input.every((arr) => arr.every((num) => num === 0));
+};
+
+const getSteps = (input: number[][]) => {
+  let steps = 0;
+
+  while (!allFlashed(input)) {
+    steps++;
+    input = input.map((arr) => arr.map((num) => num + 1));
+
+    for (let y = 0; y < input.length; y++) {
+      for (let x = 0; x < input[y].length; x++) {
+        const point = { x, y, value: input[y][x] };
+
+        if (point.value > 9) {
+          input = flash(point, input);
+        }
+      }
+    }
+  }
+
+  return steps;
+};
+
+const steps = getSteps(input);
+console.log(steps);
