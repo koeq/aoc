@@ -1,5 +1,7 @@
-const rawInput = ["start-A", "start-b", "A-c", "A-b", "b-d", "A-end", "b-end"];
+import { getInput } from "./utils/file-reader";
 
+const rawInput = ["start-A", "start-b", "A-c", "A-b", "b-d", "A-end", "b-end"];
+// const rawInput = getInput(12);
 const input = rawInput.map((str) => str.split("-"));
 
 interface node {
@@ -31,8 +33,8 @@ const createNodes = (input: string[][]): node[] => {
     }
   }
 
-  // assign empty array to end.nextNodes
-  const end = nodes.find((obj) => obj.name === "end");
+  // assign empty array to "end".nextNodes
+  const end = nodes.find((node) => node.name === "end");
   if (end) {
     end.nextNodes = [];
   }
@@ -48,60 +50,56 @@ const createNodes = (input: string[][]): node[] => {
 };
 
 const nodes = createNodes(input);
-console.log(nodes);
 
 type Path = string[];
 
 // utils
-// const isLowerCase = (str: string) => {
-//   return str === str.toLowerCase();
-// };
+const isLowerCase = (str: string) => {
+  return str === str.toLowerCase();
+};
 
-// const linkInPath = (str: string, path: Path) => {
-//   return path.some((node) => node === str);
-// };
+const nodeInPath = (str: string, path: Path) => {
+  return path.some((node) => node === str);
+};
 
-// const walk = (node: node, path: Path, paths: Path[]) => {
-//   // access first prop
-//   const nodeName = Object.keys(node)[0];
-//   const links = node[nodeName];
-//   path = [...path, nodeName];
+const walk = (node: node, path: Path, paths: Path[]) => {
+  // access first prop
+  const nodeName = node.name;
+  const nextNodes = node.nextNodes;
+  path = [...path, nodeName];
 
-//   if (nodeName === "end") {
-//     paths.push(path);
-//   } else {
-//     for (const link of links) {
-//       if (isLowerCase(link) && !linkInPath(link, path)) {
-//         path = walk(nodes.filter((obj) => obj[link])[0], path, paths);
-//       }
+  if (nodeName === "end") {
+    paths.push(path);
+  } else {
+    for (const nextNodeName of nextNodes) {
+      if (isLowerCase(nextNodeName) && !nodeInPath(nextNodeName, path)) {
+        walk(
+          nodes.filter((node) => node.name === nextNodeName)[0],
+          path,
+          paths
+        );
+      }
 
-//       if (!isLowerCase(link)) {
-//         path = walk(nodes.filter((obj) => obj[link])[0], path, paths);
-//       }
-//     }
-//   }
+      if (!isLowerCase(nextNodeName)) {
+        walk(
+          nodes.filter((node) => node.name === nextNodeName)[0],
+          path,
+          paths
+        );
+      }
+    }
+  }
+};
 
-//   if (path[path.length - 1] !== "end") {
-//     path.pop();
-//   }
-//   return path;
-// };
+const createPaths = (nodes: node[]): Path[] => {
+  const paths: Path[] = [];
+  const path: Path = [];
+  const start = nodes.filter((node) => node.name === "start")[0];
 
-// const createPaths = (nodes: node[]): Path[] => {
-//   const paths: Path[] = [];
-//   const path: Path = [];
-//   const start = nodes.filter((obj) => obj.start)[0];
+  walk(start, path, paths);
 
-//   walk(start, path, paths);
+  return paths;
+};
 
-//   return paths;
-// };
-
-// const paths = createPaths(nodes);
-// console.log(paths);
-
-// create better nodes:
-//  const `{nodeName}` = {
-//    node: `${nodeName}`
-//    nodes: []
-// }
+const paths = createPaths(nodes);
+console.log(paths.length);
