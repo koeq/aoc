@@ -52,3 +52,24 @@ const folds = strFolds.map((str) => {
     [foldArr[0]]: foldArr[1],
   };
 });
+
+const maxX = points.reduce((acc, curr) => [Math.max(acc[0], curr[0])])[0];
+const maxY = points.reduce(
+  (acc, curr) => [Math.max(acc[0], curr[1])],
+  [points[1][0]]
+)[0];
+
+const createBoard = (maxX: number, maxY: number): string[][][] => {
+  const board: string[][][] = [];
+
+  for (let y = 0; y <= maxY; y++) {
+    board.push([]);
+    for (let x = 0; x <= maxX; x++) {
+      board[y].push([]);
+    }
+  }
+
+  return board;
+};
+
+const board = createBoard(maxX, maxY);
