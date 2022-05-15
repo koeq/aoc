@@ -17,6 +17,7 @@
     "11": "ts-node src/11.ts",
     "12": "ts-node src/12.ts",
     "13": "ts-node src/13.ts",
+    "14": "ts-node src/14.ts",
     "fib": "ts-node src/utils/fib.ts"
   },
   "repository": {
