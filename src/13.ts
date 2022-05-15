@@ -15,6 +15,29 @@ interface LeftRight {
   right: string[][][];
 }
 
+// const rawInput = [
+//   "6,10",
+//   "0,14",
+//   "9,10",
+//   "0,3",
+//   "10,4",
+//   "4,11",
+//   "6,0",
+//   "6,12",
+//   "4,1",
+//   "0,13",
+//   "10,12",
+//   "3,4",
+//   "3,0",
+//   "8,4",
+//   "1,10",
+//   "2,14",
+//   "8,10",
+//   "9,0",
+
+//   "fold along y=7",
+//   "fold along x=5",
+// ];
 const rawInput = getInput(13);
 
 const createPointsAndFolds = () => {
@@ -87,6 +110,8 @@ const fold = (firstHalf: string[][][], secondHalf: string[][][]) => {
       folded[row].push([]);
       if (firstHalf[row][col][0] === "#" || secondHalf[row][col][0] === "#") {
         folded[row][col].push("#");
+      } else {
+        folded[row][col].push(".");
       }
     }
   }
@@ -112,32 +137,62 @@ const foldLeft = (foldingCol: number, board: string[][][]) => {
   return fold(left, right);
 };
 
-const foldOnce = (folds: Folds[], board: string[][][]) => {
+// 13.1
+// const foldOnce = (folds: Folds[], board: string[][][]) => {
+//   for (const fold of folds) {
+//     if (fold.x) {
+//       return (board = foldLeft(fold.x, board));
+//     } else if (fold.y) {
+//       return (board = foldUp(fold.y, board));
+//     }
+//   }
+
+//   return board;
+// };
+
+// const newBoard = foldOnce(folds, board);
+
+// const countPoints = (newBoard: string[][][]) => {
+//   let counter = 0;
+
+//   for (const row of newBoard) {
+//     for (const column of row) {
+//       if (column[0] === "#") {
+//         counter++;
+//       }
+//     }
+//   }
+
+//   return counter;
+// };
+
+// console.log(countPoints(newBoard));
+
+// 13.2
+const foldAll = (folds: Folds[], board: string[][][]) => {
+  console.log(folds);
   for (const fold of folds) {
     if (fold.x) {
-      return (board = foldLeft(fold.x, board));
+      board = foldLeft(fold.x, board);
     } else if (fold.y) {
-      return (board = foldUp(fold.y, board));
+      board = foldUp(fold.y, board);
     }
   }
 
   return board;
 };
 
-const newBoard = foldOnce(folds, board);
+const newBoard = foldAll(folds, board).map((arr) =>
+  arr.map((arr) => arr.join())
+);
 
-const countPoints = (newBoard: string[][][]) => {
-  let counter = 0;
+console.dir(newBoard, { maxArrayLength: null });
 
-  for (const row of newBoard) {
-    for (const column of row) {
-      if (column[0] === "#") {
-        counter++;
-      }
-    }
-  }
-
-  return counter;
-};
-
-console.log(countPoints(newBoard));
+const check = [
+  [ "#", "#", "#", ".", ".", "#", "#", "#", "#", ".", "#", ".", ".", "#", ".", "#", "#", "#", "#", ".", "#", ".", ".", ".", ".", "#", "#", "#", ".", ".", ".", "#", "#", ".", ".", "#", ".", ".", "#", ".",],
+  [ "#", ".", ".", "#", ".", ".", ".", ".", "#", ".", "#", ".", "#", ".", ".", ".", ".", ".", "#", ".", "#", ".", ".", ".", ".", "#", ".", ".", "#", ".", "#", ".", ".", "#", ".", "#", ".", ".", "#", ".", ],
+  [ "#", ".", ".", "#", ".", ".", ".", "#", ".", ".", "#", "#", ".", ".", ".", ".", ".", "#", ".", ".", "#", ".", ".", ".", ".", "#", ".", ".", "#", ".", "#", ".", ".", ".", ".", "#", "#", "#", "#", ".", ],
+  [ "#", "#", "#", ".", ".", ".", "#", ".", ".", ".", "#", ".", "#", ".", ".", ".", "#", ".", ".", ".", "#", ".", ".", ".", ".", "#", "#", "#", ".", ".", "#", ".", "#", "#", ".", "#", ".", ".", "#", ".", ],
+  [ "#", ".", "#", ".", ".", "#", ".", ".", ".", ".", "#", ".", "#", ".", ".", "#", ".", ".", ".", ".", "#", ".", ".", ".", ".", "#", ".", ".", ".", ".", "#", ".", ".", "#", ".", "#", ".", ".", "#", ".", ],
+  [ "#", ".", ".", "#", ".", "#", "#", "#", "#", ".", "#", ".", ".", "#", ".", "#", "#", "#", "#", ".", "#", "#", "#", "#", ".", "#", ".", ".", ".", ".", ".", "#", "#", "#", ".", "#", ".", ".", "#", ".", ],
+];
