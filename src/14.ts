@@ -76,12 +76,9 @@ const step = (steps: number, template: string) => {
 const count = (template: string) => {
   const counter: { [k: string]: number } = {};
   for (const char of template) {
-    if (char in counter) {
-      // why does counter[char]++ don't work?
-      counter[char] = counter[char] + 1;
-    } else {
-      counter[char] = 1;
-    }
+    // check if value exists -> return 1 if not
+    //                       -> return value + 1 if so
+    counter[char] = (counter[char] || 0) + 1;
   }
 
   return counter;
