@@ -1,18 +1,6 @@
-import fs from "fs";
+import { getInput } from "./get-input";
 
-const getInput = () => {
-  let input;
-
-  try {
-    input = fs.readFileSync("./src/22/inputs/input-1.txt", "utf-8");
-  } catch (err) {
-    console.log(err);
-  }
-
-  return input;
-};
-
-const input = getInput();
+const input = getInput("./src/22/inputs/input-1.txt");
 
 // 1
 const arr = input?.split("\n");
