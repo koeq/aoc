@@ -32,3 +32,10 @@ if (arr) {
 
 const res1 = addedCals.reduce((acc, curr) => (curr > acc ? curr : acc));
 // console.log(res1);
+
+const res2 = addedCals
+  .sort((a, b) => b - a)
+  .slice(0, 3)
+  .reduce((acc, curr) => acc + curr);
+
+console.log(res2);
