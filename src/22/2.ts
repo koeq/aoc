@@ -73,4 +73,47 @@ const getTotalScore = () => {
   return totalScore;
 };
 
-console.log(getTotalScore());
+// 2
+// X -> need loose
+// Y -> need draw
+// Z -> need win
+
+const getCorrectScore = () => {
+  if (!input) return;
+
+  let totalScore = 0;
+
+  for (const plays of input) {
+    const neededOutcome = possiblePlays.find((play) => play.self === plays[1]);
+    const opponent = possiblePlays.find((play) => play.opponent === plays[0]);
+
+    if (!neededOutcome || !opponent) return;
+
+    // WIN Z
+    if (neededOutcome?.self === "Z") {
+      const myPlay = possiblePlays.find(
+        (play) => play.win === opponent.opponent
+      );
+      if (!myPlay) continue;
+      totalScore += myPlay.points + 6;
+    }
+
+    // DRAW Y
+    if (neededOutcome.self === "Y") {
+      totalScore += opponent.points + 3;
+    }
+
+    // LOOSE X
+    if (neededOutcome.self === "X") {
+      const myPlay = possiblePlays.find(
+        (play) => play.loose === opponent.opponent
+      );
+      if (!myPlay) continue;
+      totalScore += myPlay.points;
+    }
+  }
+
+  return totalScore;
+};
+
+console.log(getCorrectScore());
