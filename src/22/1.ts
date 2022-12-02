@@ -1,4 +1,4 @@
-import { getInput } from "./get-input";
+import { getInput } from "../../get-input";
 
 const input = getInput("./src/22/inputs/input-1.txt");
 

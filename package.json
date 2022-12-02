@@ -4,7 +4,8 @@
   "description": "",
   "main": "1-1.js",
   "scripts": {
-    "1": "ts-node src/22/1.ts"
+    "1": "ts-node src/22/1.ts",
+    "2": "ts-node src/22/2.ts"
   },
   "repository": {
     "type": "git",
