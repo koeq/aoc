@@ -56,3 +56,28 @@ const getPriorietySum = (duplicates: string[] | undefined) => {
 };
 
 // console.log(getPriorietySum(duplicates));
+
+const getDuplicatesOfThree = () => {
+  if (!backpacks) return;
+  let duplicates: string[] = [];
+
+  for (let i = 0; i < backpacks.length; i += 3) {
+    const uniqueDuplicates = new Set<string>();
+    const first = backpacks[i];
+    const second = backpacks[i + 1];
+    const third = backpacks[i + 2];
+
+    for (const char of first) {
+      if (second.includes(char) && third.includes(char)) {
+        uniqueDuplicates.add(char);
+      }
+    }
+
+    duplicates = [...duplicates, ...uniqueDuplicates];
+  }
+
+  return duplicates;
+};
+
+const duplicatesOfThree = getDuplicatesOfThree();
+console.log(getPriorietySum(duplicatesOfThree));
