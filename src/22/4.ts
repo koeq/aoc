@@ -10,15 +10,19 @@ const getFullyContainedSum = () => {
 
   for (const line of input) {
     const [first, second] = line.split(",");
-    const [lowerFirst, upperFirst] = first.split("-");
-    const [lowerSecond, upperSecond] = second.split("-");
+
+    const [lowerFirst, upperFirst] = first
+      .split("-")
+      .map((str) => parseInt(str));
+
+    const [lowerSecond, upperSecond] = second
+      .split("-")
+      .map((str) => parseInt(str));
 
     const firstContainsSecond =
-      parseInt(lowerFirst) <= parseInt(lowerSecond) &&
-      parseInt(upperFirst) >= parseInt(upperSecond);
+      lowerFirst <= lowerSecond && upperFirst >= upperSecond;
     const secondContainsFirst =
-      parseInt(lowerSecond) <= parseInt(lowerFirst) &&
-      parseInt(upperSecond) >= parseInt(upperFirst);
+      lowerSecond <= lowerFirst && upperSecond >= upperFirst;
 
     if (firstContainsSecond || secondContainsFirst) {
       sum++;
@@ -28,4 +32,38 @@ const getFullyContainedSum = () => {
   return sum;
 };
 
-console.log(getFullyContainedSum());
+// console.log(getFullyContainedSum());
+
+// 2
+const getPartlyContainedSum = () => {
+  if (!input) return;
+  let sum = 0;
+
+  for (const line of input) {
+    const [first, second] = line.split(",");
+
+    const [lowerFirst, upperFirst] = first
+      .split("-")
+      .map((str) => parseInt(str));
+
+    const [lowerSecond, upperSecond] = second
+      .split("-")
+      .map((str) => parseInt(str));
+
+    const firstOverlapsWithSecond =
+      (lowerFirst <= lowerSecond && upperFirst >= lowerSecond) ||
+      (upperFirst >= upperSecond && lowerFirst <= upperSecond);
+
+    const secondOverlapsWithFirst =
+      (lowerSecond <= lowerFirst && upperSecond >= lowerFirst) ||
+      (upperSecond >= upperFirst && lowerSecond <= upperFirst);
+
+    if (firstOverlapsWithSecond || secondOverlapsWithFirst) {
+      sum++;
+    }
+  }
+
+  return sum;
+};
+
+console.log(getPartlyContainedSum());
