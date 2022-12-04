@@ -6,7 +6,8 @@
   "scripts": {
     "1": "ts-node src/22/1.ts",
     "2": "ts-node src/22/2.ts",
-    "3": "ts-node src/22/3.ts"
+    "3": "ts-node src/22/3.ts",
+    "4": "ts-node src/22/4.ts"
   },
   "repository": {
     "type": "git",
