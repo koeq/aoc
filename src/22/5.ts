@@ -55,6 +55,7 @@ const getInstrcutions = (): Instruction[] => {
 const stacks = createStacks();
 const instructions = getInstrcutions();
 
+// 1
 const moveStacks = () => {
   if (!instructions || !stacks) return;
 
@@ -72,7 +73,33 @@ const moveStacks = () => {
   }
 };
 
-moveStacks();
+//2
+const moveStacksAtOnce = () => {
+  if (!instructions || !stacks) return;
+
+  for (const instruction of instructions) {
+    let i = 0;
+    const crates = [];
+
+    while (i < instruction.amount) {
+      // save removed crates
+      crates.unshift(stacks[instruction.from - 1].pop());
+
+      i++;
+    }
+    crates.forEach((str) => {
+      if (str) {
+        stacks[instruction.to - 1].push(str);
+      }
+    });
+  }
+};
+
+// 1
+// moveStacks()
+
+// 2
+moveStacksAtOnce();
 let message = "";
 stacks?.forEach((stack) => (message += stack.peek()));
 console.log(message);
