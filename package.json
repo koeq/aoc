@@ -8,7 +8,8 @@
     "2": "ts-node src/22/2.ts",
     "3": "ts-node src/22/3.ts",
     "4": "ts-node src/22/4.ts",
-    "5": "ts-node src/22/5.ts"
+    "5": "ts-node src/22/5.ts",
+    "6": "ts-node src/22/6.ts"
   },
   "repository": {
     "type": "git",
