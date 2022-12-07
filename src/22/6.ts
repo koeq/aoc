@@ -11,7 +11,7 @@ const getProcessedCountBeforeFourUnique = (processStep: number) => {
     const max = Math.max(
       ...arr.map((char) =>
         arr.reduce(
-          (counter, currChar) => (currChar === char ? ++counter : counter),
+          (counter, currChar) => (currChar === char ? counter + 1 : counter),
           0
         )
       )
