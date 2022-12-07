@@ -1,31 +1,5 @@
 import { getInput } from "../../get-input";
 
-// const input = `$ cd /
-// $ ls
-// dir a
-// 14848514 b.txt
-// 8504156 c.dat
-// dir d
-// $ cd a
-// $ ls
-// dir e
-// 29116 f
-// 2557 g
-// 62596 h.lst
-// $ cd e
-// $ ls
-// 584 i
-// $ cd ..
-// $ cd ..
-// $ cd d
-// $ ls
-// 4060174 j
-// 8033020 d.log
-// 5626152 d.ext
-// 7214296 k`;
-
-// const instructions = input?.split("\n").filter((str) => str);
-
 const instructions = getInput("./src/22/inputs/input-7.txt")
   ?.split("\n")
   .filter((str) => str);
@@ -124,9 +98,46 @@ const collectMax100000SizeDirs = (dir: DirNode | undefined) => {
 
 collectMax100000SizeDirs(root);
 
-console.log(
-  max100000SizeDirs.reduce(
-    (sizes, dir) => (dir.size ? sizes + dir.size : sizes),
-    0
-  )
-);
+// 1
+// console.log(
+//   max100000SizeDirs.reduce(
+//     (sizes, dir) => (dir.size ? sizes + dir.size : sizes),
+//     0
+//   )
+// );
+
+// 2
+
+const findSmallestTodDeleteDir = (toFree: number) => {
+  if (!root || !root.size) {
+    return;
+  }
+
+  let currentSmallest = root.size;
+
+  const getToDeleteDirSize = (node: DirNode, toFree: number) => {
+    if (!node.size || node.size < toFree) {
+      return;
+    }
+
+    for (const dir of node.dirs) {
+      getToDeleteDirSize(dir, toFree);
+    }
+
+    if (node.size < currentSmallest) {
+      currentSmallest = node.size;
+    }
+  };
+
+  getToDeleteDirSize(root, toFree);
+
+  console.log(currentSmallest);
+  return currentSmallest;
+};
+
+if (root && root.size) {
+  const currentSpace = root.size;
+  const unusedSpace = 70000000 - currentSpace;
+  const toFree = 30000000 - unusedSpace;
+  findSmallestTodDeleteDir(toFree);
+}
