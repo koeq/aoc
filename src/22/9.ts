@@ -1,16 +1,5 @@
 import { getInput } from "../../get-input";
 
-// const testInput = `R 4
-// U 4
-// L 3
-// D 1
-// R 4
-// D 1
-// L 5
-// R 2`;
-
-// const moves = testInput.split("\n");
-
 const moves = getInput("./src/22/inputs/input-9.txt")?.split("\n")!;
 moves.pop();
 
@@ -142,6 +131,133 @@ const simulate = (seen: boolean[][]) => {
 };
 
 // 1
+// const seen = createHuge2DArray();
+// const uniquePositionCount = simulate(seen);
+// console.log(uniquePositionCount.count);
+
+// 2
+interface Knots {
+  [k: number]: Point;
+  1: Point;
+  2: Point;
+  3: Point;
+  4: Point;
+  5: Point;
+  6: Point;
+  7: Point;
+  8: Point;
+  9: Point;
+}
+
+const updateSubsequentKnot = (
+  first: Point,
+  second: Point,
+  seen: boolean[][],
+  uniquePositionsCount: { count: number },
+  updatingTail: boolean
+) => {
+  // same row
+  if (first.y === second.y) {
+    if (first.x > second.x) {
+      second.x++;
+    } else {
+      second.x--;
+    }
+  }
+
+  // same column
+  if (first.x === second.x) {
+    if (first.y > second.y) {
+      second.y++;
+    } else {
+      second.y--;
+    }
+  }
+
+  // move diagonally
+  // 0 0 0 h 0
+  // 0 t 0 0 0
+  if (first.y > second.y && first.x > second.x) {
+    second.y = second.y + 1;
+    second.x = second.x + 1;
+  }
+
+  // 0 h 0 0 0
+  // 0 0 0 t 0
+  if (first.y > second.y && first.x < second.x) {
+    second.y = second.y + 1;
+    second.x = second.x - 1;
+  }
+
+  // 0 t 0 0 0
+  // 0 0 0 h 0
+  if (first.y < second.y && first.x > second.x) {
+    second.y = second.y - 1;
+    second.x = second.x + 1;
+  }
+
+  // 0 0 0 t 0
+  // 0 h 0 0 0
+  if (first.y < second.y && first.x < second.x) {
+    second.y = second.y - 1;
+    second.x = second.x - 1;
+  }
+
+  // update seen if not seen
+  if (updatingTail && !seen[second.y][second.x]) {
+    seen[second.y][second.x] = true;
+    uniquePositionsCount.count++;
+  }
+};
+
+const walk2 = (
+  knots: Knots,
+  direction: string,
+  amount: number,
+  seen: boolean[][],
+  uniquePositionsCount: { count: number }
+) => {
+  for (let i = 0; i < amount; i++) {
+    updateHead(knots[0], direction);
+
+    for (let i = 0; i < 9; i++) {
+      if (!arePointsTouching(knots[i], knots[i + 1])) {
+        updateSubsequentKnot(
+          knots[i],
+          knots[i + 1],
+          seen,
+          uniquePositionsCount,
+          i + 1 === 9
+        );
+      }
+    }
+  }
+};
+
+const simulate2 = (seen: boolean[][]) => {
+  const knots = {
+    0: { y: 499, x: 499 },
+    1: { y: 499, x: 499 },
+    2: { y: 499, x: 499 },
+    3: { y: 499, x: 499 },
+    4: { y: 499, x: 499 },
+    5: { y: 499, x: 499 },
+    6: { y: 499, x: 499 },
+    7: { y: 499, x: 499 },
+    8: { y: 499, x: 499 },
+    9: { y: 499, x: 499 },
+  };
+
+  const uniquePositionsCount = { count: 1 };
+
+  for (const move of moves) {
+    const [direction, amount] = move.split(" ");
+    walk2(knots, direction, parseInt(amount), seen, uniquePositionsCount);
+  }
+
+  return uniquePositionsCount;
+};
+
 const seen = createHuge2DArray();
-const uniquePositionCount = simulate(seen);
+const uniquePositionCount = simulate2(seen);
 console.log(uniquePositionCount.count);
