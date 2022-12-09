@@ -86,7 +86,6 @@ const getVisibleCount = () => {
 // console.log(count);
 
 // 2
-
 const getMaxScenicScore = () => {
   let maxScenicScore = 0;
 
