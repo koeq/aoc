@@ -1,154 +1,5 @@
 import { getInput } from "../../get-input";
 
-// const testInput = `addx 15
-// addx -11
-// addx 6
-// addx -3
-// addx 5
-// addx -1
-// addx -8
-// addx 13
-// addx 4
-// noop
-// addx -1
-// addx 5
-// addx -1
-// addx 5
-// addx -1
-// addx 5
-// addx -1
-// addx 5
-// addx -1
-// addx -35
-// addx 1
-// addx 24
-// addx -19
-// addx 1
-// addx 16
-// addx -11
-// noop
-// noop
-// addx 21
-// addx -15
-// noop
-// noop
-// addx -3
-// addx 9
-// addx 1
-// addx -3
-// addx 8
-// addx 1
-// addx 5
-// noop
-// noop
-// noop
-// noop
-// noop
-// addx -36
-// noop
-// addx 1
-// addx 7
-// noop
-// noop
-// noop
-// addx 2
-// addx 6
-// noop
-// noop
-// noop
-// noop
-// noop
-// addx 1
-// noop
-// noop
-// addx 7
-// addx 1
-// noop
-// addx -13
-// addx 13
-// addx 7
-// noop
-// addx 1
-// addx -33
-// noop
-// noop
-// noop
-// addx 2
-// noop
-// noop
-// noop
-// addx 8
-// noop
-// addx -1
-// addx 2
-// addx 1
-// noop
-// addx 17
-// addx -9
-// addx 1
-// addx 1
-// addx -3
-// addx 11
-// noop
-// noop
-// addx 1
-// noop
-// addx 1
-// noop
-// noop
-// addx -13
-// addx -19
-// addx 1
-// addx 3
-// addx 26
-// addx -30
-// addx 12
-// addx -1
-// addx 3
-// addx 1
-// noop
-// noop
-// noop
-// addx -9
-// addx 18
-// addx 1
-// addx 2
-// noop
-// noop
-// addx 9
-// noop
-// noop
-// noop
-// addx -1
-// addx 2
-// addx -37
-// addx 1
-// addx 3
-// noop
-// addx 15
-// addx -21
-// addx 22
-// addx -6
-// addx 1
-// noop
-// addx 2
-// addx 1
-// noop
-// addx -10
-// noop
-// noop
-// addx 20
-// addx 1
-// addx 2
-// addx 2
-// addx -6
-// addx -11
-// noop
-// noop
-// noop`;
-
-// const instructions = testInput.split("\n");
-
 const instructions = getInput("./src/22/inputs/input-10.txt")?.split("\n")!;
 instructions.pop();
 
@@ -189,5 +40,74 @@ const getSignalStrengthSum = () => {
   return sum;
 };
 
-const sum = getSignalStrengthSum();
-console.log(sum);
+// const sum = getSignalStrengthSum();
+// console.log(sum);
+
+// 2
+// screen size: 40 x 6 --> width: 0-39, height: 0-5
+// sprite: 3 pixels --> X register sets horizontal position of the middle of the sprite
+// CRT is tied to clock cycle --> draws one pixel per cycle '#'
+
+const spriteAtCurrent = (spriteMid: number, currIndex: number) =>
+  currIndex === spriteMid - 1 ||
+  currIndex === spriteMid ||
+  currIndex === spriteMid + 1;
+
+const draw = () => {
+  const screen: string[] = [];
+  let row = "";
+  let cycle = 0;
+  let X = 1;
+  let spriteMid = X;
+  let currIndex = cycle % 40;
+
+  for (const input of instructions) {
+    const [instruction, amount] = input.split(" ");
+
+    if (instruction === "noop") {
+      row += spriteAtCurrent(spriteMid, currIndex) ? "#" : ".";
+
+      cycle++;
+      currIndex = cycle % 40;
+
+      if (cycle % 40 === 0) {
+        screen.push(row);
+        row = "";
+      }
+
+      continue;
+    }
+
+    // begin instruction
+    row += spriteAtCurrent(spriteMid, currIndex) ? "#" : ".";
+
+    cycle++;
+    currIndex = cycle % 40;
+
+    if (cycle % 40 === 0) {
+      screen.push(row);
+      row = "";
+    }
+
+    // execute instruction
+    row += spriteAtCurrent(spriteMid, currIndex) ? "#" : ".";
+
+    cycle++;
+    currIndex = cycle % 40;
+
+    if (cycle % 40 === 0) {
+      screen.push(row);
+
+      row = "";
+    }
+
+    // increment
+    X = X + parseInt(amount);
+    spriteMid = X;
+  }
+
+  return screen;
+};
+
+const screen = draw();
+console.log(screen);
