@@ -106,6 +106,9 @@ const createMonkeys = () => {
 };
 
 const monkeys = createMonkeys();
+// 2 in 1 mixed
+let mod = 1;
+monkeys.forEach((monkey) => (mod *= monkey.test.divisor));
 
 const monkeyPlays = (monkey: Monkey) => {
   monkey.items.forEach((item) => {
@@ -113,8 +116,13 @@ const monkeyPlays = (monkey: Monkey) => {
     const old = item;
     const newLevel = eval(monkey.operation);
 
-    // TEST
-    const finalStessLevel = Math.floor(newLevel / 3);
+    // 1
+    // const finalStessLevel = Math.floor(newLevel / 3);
+    // 2
+    // this works because its the common denominator of all divisors
+    // so it doesen't change any of the test results while reducing the items
+    const finalStessLevel = newLevel % mod;
+
     if (finalStessLevel % monkey.test.divisor === 0) {
       monkeys[monkey.test.ifTrueToMonkey].items.push(finalStessLevel);
 
@@ -135,6 +143,6 @@ const play = (rounds: number) => {
   }
 };
 
-play(20);
+play(10000);
 monkeys.sort((a, b) => b.inspectedItems - a.inspectedItems);
 console.log(monkeys[0].inspectedItems * monkeys[1].inspectedItems);
