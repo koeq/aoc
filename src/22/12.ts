@@ -141,13 +141,11 @@ const getValidNeighbours = (node: Node, seen: boolean[][]) => {
 let { start, end } = getStartingAndEndNode()!;
 
 const seen = createSeen(start)!;
-const arr = createArr(start)!;
 
 const solve = () => {
   const queue: Node[] = [];
   const prev = [];
   queue.push(start!);
-  arr[start!.y][start!.x] = "#";
 
   while (queue.length) {
     const node = queue.shift()!;
@@ -174,19 +172,18 @@ const solve = () => {
       seen[y][x] = true;
       queue.push(neighbour);
       prev.push(neighbour);
-      arr[neighbour.y][neighbour.x] = "#";
     }
   }
 
   return prev;
 };
 
-const prev = solve();
-const E = prev.find((node) => node.y === end!.y && node.x === end!.x);
+// const prev = solve();
+// const E = prev.find((node) => node.y === end!.y && node.x === end!.x);
 
-const stepBack = (node: Node) => {
+const stepBack = (node: Node | undefined) => {
   let steps = 0;
-  while (node.prev) {
+  while (node) {
     console.log(input[node.y][node.x]);
 
     steps++;
@@ -196,4 +193,104 @@ const stepBack = (node: Node) => {
   return steps;
 };
 
-console.log(stepBack(E!));
+// console.log(stepBack(E!));
+
+// 2
+
+const seen2 = createSeen(end)!;
+
+console.log(input);
+const getValidNeighbours2 = (node: Node, seen2: boolean[][]) => {
+  const oneApartOrStartEnd2 = (node: Node, neighbour: Node) => {
+    const neighbourValue = input[neighbour.y][neighbour.x];
+    let nodeValue = input[node.y][node.x];
+
+    // condition node - neigbour  <=  1
+    // node === 122
+    if (nodeValue === "E") {
+      return 122 - neighbourValue.charCodeAt(0) <= 1;
+    }
+
+    return nodeValue.charCodeAt(0) - neighbourValue.charCodeAt(0) <= 1;
+  };
+
+  const neighbours: Node[] = [];
+
+  const { y, x } = node;
+
+  const top = { y: y - 1, x, prev: node };
+  const right = { y, x: x + 1, prev: node };
+  const bottom = { y: y + 1, x, prev: node };
+  const left = { y, x: x - 1, prev: node };
+
+  // top
+  if (top.y >= 0 && !seen2[top.y][x]) {
+    if (oneApartOrStartEnd2(node, top)) {
+      neighbours.push(top);
+    }
+  }
+
+  // right
+  if (right.x < input[0].length && !seen2[right.y][right.x]) {
+    if (oneApartOrStartEnd2(node, right)) {
+      neighbours.push(right);
+    }
+  }
+
+  // bottom
+  if (bottom.y < input.length && !seen2[bottom.y][bottom.x]) {
+    if (oneApartOrStartEnd2(node, bottom)) {
+      neighbours.push(bottom);
+    }
+  }
+
+  // left
+  if (left.x >= 0 && !seen2[y][left.x]) {
+    if (oneApartOrStartEnd2(node, left)) {
+      neighbours.push(left);
+    }
+  }
+
+  return neighbours;
+};
+
+const solve2 = () => {
+  const queue: Node[] = [];
+  const prev = [];
+  queue.push(end!);
+
+  while (queue.length) {
+    console.log(queue);
+    const node = queue.shift()!;
+
+    // found end
+    if (input[node.y][node.x] === "a") {
+      console.log("reached end");
+
+      break;
+    }
+
+    const neighbours = getValidNeighbours2(node, seen2);
+
+    for (const neighbour of neighbours) {
+      const { y, x } = neighbour;
+
+      if (seen2[y][x]) {
+        continue;
+      }
+
+      // push to prev --> figure out how to recreate the path
+      seen2[y][x] = true;
+      queue.push(neighbour);
+      prev.push(neighbour);
+    }
+  }
+
+  return prev;
+};
+
+const prev = solve2();
+
+const a = prev.find((node) => input[node.y][node.x] === "a");
+console.log(a);
+console.log(stepBack(a!) - 1);
