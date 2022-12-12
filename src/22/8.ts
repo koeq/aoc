@@ -1,4 +1,4 @@
-import { getInput } from "../../get-input";
+import { getInput } from "./get-input";
 
 const trees = getInput("./src/22/inputs/input-8.txt")
   ?.split("\n")

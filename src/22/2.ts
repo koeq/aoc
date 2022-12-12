@@ -1,4 +1,4 @@
-import { getInput } from "../../get-input";
+import { getInput } from "./get-input";
 
 // A -> Rock -> X
 // B -> Paper -> Y

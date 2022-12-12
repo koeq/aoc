@@ -1,4 +1,4 @@
-import { getInput } from "../../get-input";
+import { getInput } from "./get-input";
 
 // const testInput = `
 // Monkey 0:

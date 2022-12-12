@@ -1,4 +1,4 @@
-import { getInput } from "../../get-input";
+import { getInput } from "./get-input";
 
 const backpacks = getInput("./src/22/inputs/input-3.txt")
   ?.split("\n")

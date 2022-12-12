@@ -1,4 +1,4 @@
-import { getInput } from "../../get-input";
+import { getInput } from "./get-input";
 
 const instructions = getInput("./src/22/inputs/input-10.txt")?.split("\n")!;
 instructions.pop();
