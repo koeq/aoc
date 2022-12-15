@@ -3,33 +3,7 @@ import { getInput } from "./get-input";
 const input = getInput("./src/22/inputs/input-13.txt")?.split("\n")!;
 input.pop();
 
-// const testInput = `[1,1,3,1,1]
-// [1,1,5,1,1]
-
-// [[1],[2,3,4]]
-// [[1],4]
-
-// [9]
-// [[8,7,6]]
-
-// [[4,4],4,4]
-// [[4,4],4,4,4]
-
-// [7,7,7,7]
-// [7,7,7]
-
-// []
-// [3]
-
-// [[[]]]
-// [[]]
-
-// [1,[2,[3,[4,[5,6,7]]]],8,9]
-// [1,[2,[3,[4,[5,6,0]]]],8,9]`;
-
-// const input = testInput.split("\n");
-
-// this logic is flawed
+// this logic seems flawed
 interface NestedArray<T> extends Array<T | NestedArray<T>> {}
 type Tuple = [number[] | NestedArray<number>, number[] | NestedArray<number>];
 
@@ -143,5 +117,41 @@ const countCorrectOrder = (groupedInput: Tuple[]): number[] => {
   return inOrderIndicies;
 };
 
-const inOrderIndices = countCorrectOrder(groupedInput);
-console.log(inOrderIndices.reduce((acc, curr) => acc + curr));
+// const inOrderIndices = countCorrectOrder(groupedInput);
+// console.log(inOrderIndices.reduce((acc, curr) => acc + curr));
+
+// 2
+const getLinearInput = (input: string[]) => {
+  const filteredInput: NestedArray<number>[] = [];
+
+  for (const str of input) {
+    if (str.length) {
+      filteredInput.push(eval(str));
+    }
+  }
+
+  return filteredInput;
+};
+const linearInput = getLinearInput(input);
+linearInput.push([[2]]);
+linearInput.push([[6]]);
+
+const bubbleSort = (input: NestedArray<number>) => {
+  for (let j = 0; j < input.length; j++) {
+    for (let i = 0; i < input.length - 1 - j; i++) {
+      if (!isInOrder(input[i], input[i + 1])) {
+        const temp = input[i + 1];
+        input[i + 1] = input[i];
+        input[i] = temp;
+      }
+    }
+  }
+
+  return input.map((entry) => JSON.stringify(entry));
+};
+
+const stringifiedSorted = bubbleSort(linearInput);
+console.log(
+  (stringifiedSorted.indexOf("[[2]]") + 1) *
+    (stringifiedSorted.indexOf("[[6]]") + 1)
+);
