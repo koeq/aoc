@@ -13,6 +13,8 @@ const input = getInput("./src/22/inputs/input-14.txt")
 
 input.pop();
 
+const CAVE_INCREASE = 150;
+
 // const testInput = `498,4 -> 498,6 -> 496,6
 // 503,4 -> 502,4 -> 502,9 -> 494,9`;
 
@@ -61,14 +63,16 @@ const createCave = (input: [number, number][][]) => {
     }
   }
 
-  console.log(edges);
-
   // create empty cave
   // adjust x by -493 to be 0 indexed
   for (let y = edges.y.min; y <= edges.y.max; y++) {
     // add one column where no stone is at start and end
     let row = "";
-    for (let x = mapX(edges.x.min) - 1; x <= mapX(edges.x.max) + 1; x++) {
+    for (
+      let x = mapX(edges.x.min) - CAVE_INCREASE;
+      x <= mapX(edges.x.max) + CAVE_INCREASE;
+      x++
+    ) {
       row += ".";
     }
 
@@ -107,11 +111,19 @@ const createCave = (input: [number, number][][]) => {
     insert(cave, { x: mapX(x), y }, "#");
   });
 
+  const secondToLastRow = ".".repeat(cave[0].length);
+  const lastRow = "#".repeat(cave[0].length);
+
+  cave.push(secondToLastRow);
+  cave.push(lastRow);
+
   return cave;
 };
 
 const mapX = (x: number) => {
-  return x - 439;
+  // test input
+  // return x - 493 + CAVE_INCREASE;
+  return x - 439 + CAVE_INCREASE;
 };
 
 const insert = (
@@ -135,10 +147,6 @@ const fallTo = (from: Point): Point | undefined => {
       continue;
     }
 
-    if (cave[y - 1][from.x] === "+") {
-      return;
-    }
-
     // left
 
     if (cave[y][from.x - 1] === ".") {
@@ -150,6 +158,10 @@ const fallTo = (from: Point): Point | undefined => {
       return fallTo({ x: from.x + 1, y: y });
     }
 
+    if (cave[y - 1][from.x] === "+") {
+      return;
+    }
+
     return { x: from.x, y: y - 1 };
   }
 };
@@ -158,7 +170,8 @@ const dropSand = () => {
   const source = { x: mapX(500), y: 0 };
   insert(cave, source, "+");
 
-  let sandCounter = 0;
+  // add one for + which in 2 is also resting sand
+  let sandCounter = 1;
   let node = fallTo(source);
 
   while (node) {
@@ -172,4 +185,5 @@ const dropSand = () => {
 
 const sandCounter = dropSand();
 console.log(JSON.stringify(cave, undefined, 2));
+// console.log(cave);
 console.log(sandCounter);
