@@ -8,9 +8,6 @@ interface Points {
   distance: number;
 }
 
-const input = getInput("./src/22/inputs/input-15.txt")!.split("\n");
-input.pop();
-
 // const testInput = `Sensor at x=2, y=18: closest beacon is at x=-2, y=15
 // Sensor at x=9, y=16: closest beacon is at x=10, y=16
 // Sensor at x=13, y=2: closest beacon is at x=15, y=3
@@ -27,6 +24,9 @@ input.pop();
 // Sensor at x=20, y=1: closest beacon is at x=15, y=3`;
 
 // const input = testInput.split("\n")!;
+
+const input = getInput("./src/22/inputs/input-15.txt")!.split("\n");
+input.pop();
 
 const parse = (input: string[]) => {
   const sensorsNBeacons: Points[] = [];
@@ -53,6 +53,24 @@ const parse = (input: string[]) => {
 };
 
 const sensorsNBeacons = parse(input);
+
+const beaconsOrSensorsInRowCount = (row: number, sensorsNBeacons: Points[]) => {
+  const unique = new Set<string>();
+
+  sensorsNBeacons
+    .filter(({ bY, sY }) => bY === row || sY === row)
+    .forEach(({ sX, sY, bX, bY }) => {
+      if (sY === row) {
+        unique.add(`${sX}, ${sY}`);
+      }
+
+      if (bY === row) {
+        unique.add(`${bX}, ${bY}`);
+      }
+    });
+
+  return unique.size;
+};
 
 const countNoBeaconsInRow = (row: number, sensorsNBeacons: Points[]) => {
   const noBeaconPoints = new Set<string>();
@@ -85,25 +103,77 @@ const countNoBeaconsInRow = (row: number, sensorsNBeacons: Points[]) => {
     }
   }
 
-  const beaconsInRowCount = () => {
-    const unique = new Set<string>();
-
-    sensorsNBeacons
-      .filter(({ bY, sY }) => bY === row || sY === row)
-      .forEach(({ sX, sY, bX, bY }) => {
-        if (sY === row) {
-          unique.add(`${sX}, ${sY}`);
-        }
-
-        if (bY === row) {
-          unique.add(`${bX}, ${bY}`);
-        }
-      });
-
-    return unique.size;
-  };
-
-  return noBeaconPoints.size - beaconsInRowCount();
+  return noBeaconPoints.size;
 };
 
-console.log(countNoBeaconsInRow(2000000, sensorsNBeacons));
+// 1
+// console.log(
+//   countNoBeaconsInRow(2000000, sensorsNBeacons) -
+//     beaconsOrSensorsInRowCount(2000000, sensorsNBeacons)
+// );
+
+// 2
+
+const sensorReachesX = (x: number, sX: number, distance: number): boolean => {
+  if (x === sX) {
+    return true;
+  }
+
+  if (x < sX) {
+    return sX - distance <= x;
+  }
+
+  // x is bigger
+  return sX + distance >= x;
+};
+
+const getBeacon = (limit: number, sensorsNBeacons: Points[]) => {
+  for (let y = 0; y <= limit; y++) {
+    let x = 0;
+
+    for (let i = 0; i < sensorsNBeacons.length; i++) {
+      const { sX, sY, distance } = sensorsNBeacons[i];
+
+      if (sY === y) {
+        if (sensorReachesX(x, sX, distance)) {
+          x = sX + distance + 1;
+          // reset loop
+          i = 0;
+        }
+      }
+
+      if (sY < y) {
+        if (sY + distance >= y) {
+          const restDistance = distance - (y - sY);
+
+          if (sensorReachesX(x, sX, restDistance)) {
+            x = sX + restDistance + 1;
+            i = 0;
+          }
+        }
+      }
+
+      if (sY > y) {
+        if (sY - distance <= y) {
+          const restDistance = distance - (sY - y);
+
+          if (sensorReachesX(x, sX, restDistance)) {
+            x = sX + restDistance + 1;
+            i = 0;
+          }
+        }
+      }
+    }
+
+    if (x <= limit) {
+      return [y, x];
+    }
+  }
+
+  return [0, 0];
+};
+
+const [y, x] = getBeacon(4000000, sensorsNBeacons)!;
+console.log(y, x);
+
+console.log(x * 4000000 + y);
