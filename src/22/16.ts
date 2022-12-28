@@ -21,23 +21,23 @@ interface Graph {
   [nodeName: string]: Edge;
 }
 
-// const input = getInput("./src/22/inputs/input-16.txt")!.split("\n");
-// input.pop();
+const input = getInput("./src/22/inputs/input-16.txt")!.split("\n");
+input.pop();
 
 // This is a unweighted graph as far as I can tell.
 // -> Graph theory first then solve this.
-const testInput = `Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
-Valve BB has flow rate=13; tunnels lead to valves CC, AA
-Valve CC has flow rate=2; tunnels lead to valves DD, BB
-Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
-Valve EE has flow rate=3; tunnels lead to valves FF, DD
-Valve FF has flow rate=0; tunnels lead to valves EE, GG
-Valve GG has flow rate=0; tunnels lead to valves FF, HH
-Valve HH has flow rate=22; tunnel leads to valve GG
-Valve II has flow rate=0; tunnels lead to valves AA, JJ
-Valve JJ has flow rate=21; tunnel leads to valve II`;
+// const testInput = `Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+// Valve BB has flow rate=13; tunnels lead to valves CC, AA
+// Valve CC has flow rate=2; tunnels lead to valves DD, BB
+// Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
+// Valve EE has flow rate=3; tunnels lead to valves FF, DD
+// Valve FF has flow rate=0; tunnels lead to valves EE, GG
+// Valve GG has flow rate=0; tunnels lead to valves FF, HH
+// Valve HH has flow rate=22; tunnel leads to valve GG
+// Valve II has flow rate=0; tunnels lead to valves AA, JJ
+// Valve JJ has flow rate=21; tunnel leads to valve II`;
 
-const input = testInput.split("\n");
+// const input = testInput.split("\n");
 
 const createAdjacencyMap = (input: string[]) => {
   const adjacencyMap: AdjacencyMap = {};
@@ -114,6 +114,7 @@ const getShortestPaths = (adjacencyMap: AdjacencyMap, nodeName: string) => {
   return dists;
 };
 
+// create graph without 0 nodes
 const createGraph = (adjacencyMap: AdjacencyMap): Graph => {
   const nodeNames = Object.keys(adjacencyMap);
   const graph: Graph = {};
@@ -121,7 +122,7 @@ const createGraph = (adjacencyMap: AdjacencyMap): Graph => {
   for (const nodeName in adjacencyMap) {
     const node = adjacencyMap[nodeName];
 
-    if (node.flowRate === 0) {
+    if (node.flowRate === 0 && nodeName !== "AA") {
       continue;
     }
 
@@ -129,7 +130,15 @@ const createGraph = (adjacencyMap: AdjacencyMap): Graph => {
 
     const dists = getShortestPaths(adjacencyMap, nodeName);
     for (let i = 0; i < nodeNames.length; i++) {
-      graph[nodeName].to.push({ name: nodeNames[i], weight: dists[i] });
+      // ignore flowrate 0 nodes but include start
+      if (adjacencyMap[nodeNames[i]].flowRate === 0 && nodeNames[i] !== "AA") {
+        continue;
+      }
+
+      // don't push path to self
+      if (dists[i] > 0) {
+        graph[nodeName].to.push({ name: nodeNames[i], weight: dists[i] });
+      }
     }
   }
 
@@ -138,72 +147,50 @@ const createGraph = (adjacencyMap: AdjacencyMap): Graph => {
 
 const graph = createGraph(adjacencyMap);
 
-// let maxPressureRelease = 0;
+const walk = (graph: Graph, nodeName: string, time: number) => {
+  // base case
+  if (time <= 0) {
+    return 0;
+  }
 
-// const walk = (
-//   adjacencyMap: AdjacencyMap,
-//   nodeName: string,
-//   time: number,
-//   totalPressureRelease: number,
-//   pressureReleasePerMinute: number
-// ) => {
-//   // base case
-//   if (time <= 0) {
-//     maxPressureRelease =
-//       maxPressureRelease < totalPressureRelease
-//         ? totalPressureRelease
-//         : maxPressureRelease;
+  // open
+  if (!graph[nodeName].open) {
+    graph[nodeName].open = true;
+  }
 
-//     return;
-//   }
+  // pre
+  let maxFlow = 0;
+  const curr = graph[nodeName];
 
-//   // walk
-//   const curr = adjacencyMap[nodeName];
-//   time--;
-//   totalPressureRelease += pressureReleasePerMinute;
+  for (const { name, weight } of curr.to) {
+    if (graph[name].open) {
+      continue;
+    }
 
-//   if (curr.flowRate > 0 && !adjacencyMap[nodeName].open) {
-//     // open
-//     time--;
-//     // mind the order
-//     totalPressureRelease += pressureReleasePerMinute;
-//     pressureReleasePerMinute += curr.flowRate;
-//     adjacencyMap[nodeName].open = true;
-//   }
+    // still pre
+    const adjustedTime = time - (weight + 1);
+    const nodeFlow = adjustedTime * graph[name].flowRate;
+    // recurse
+    const flow = nodeFlow + walk(graph, name, adjustedTime);
 
-//   for (const nodeName of curr.to) {
-//     walk(
-//       adjacencyMap,
-//       nodeName,
-//       time,
-//       totalPressureRelease,
-//       pressureReleasePerMinute
-//     );
-//   }
+    // post
+    graph[name].open = false;
 
-//   time++;
-//   totalPressureRelease -= pressureReleasePerMinute;
-//   pressureReleasePerMinute -= curr.flowRate;
-//   adjacencyMap[nodeName].open = false;
-// };
+    if (flow > maxFlow) {
+      maxFlow = flow;
+    }
+  }
 
-// function getMaxPressureRelease(adjacencyMap: AdjacencyMap): number {
-//   let time = 30;
-//   const start = "AA";
-//   let totalPressureRelease = 0;
-//   let pressureReleasePerMinute = 0;
-//   const seen: string[] = [];
+  return maxFlow;
+};
 
-//   walk(
-//     adjacencyMap,
-//     start,
-//     time,
-//     totalPressureRelease,
-//     pressureReleasePerMinute
-//   );
+function getMaxPressureRelease(graph: Graph): number {
+  const start = "AA";
+  const time = 30;
+  // open valve to make check for all valves open possible
+  graph[start].open = true;
 
-//   return maxPressureRelease;
-// }
+  return walk(graph, start, time);
+}
 
-// getMaxPressureRelease(adjacencyMap);
-// console.log(maxPressureRelease);
+console.log(getMaxPressureRelease(graph));
