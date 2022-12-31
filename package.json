@@ -19,7 +19,8 @@
     "13": "ts-node src/22/13.ts",
     "14": "ts-node src/22/14.ts",
     "15": "ts-node src/22/15.ts",
-    "16": "ts-node src/22/16.ts"
+    "16": "ts-node src/22/16.ts",
+    "17": "ts-node src/22/17.ts"
   },
   "repository": {
     "type": "git",
