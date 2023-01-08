@@ -1,7 +1,10 @@
 import { getInput } from "./get-input";
 
-// const jets = getInput("./src/22/inputs/input-17.txt")!.split("\n");
-// jets.pop();
+let input = getInput("./src/22/inputs/input-17.txt")!.split("\n");
+input.pop();
+let jets = input.join();
+
+// const jets = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";
 
 const printArrAsString = (arr: unknown[]) => {
   for (const row of arr) {
@@ -11,9 +14,7 @@ const printArrAsString = (arr: unknown[]) => {
   console.log("\n");
 };
 
-const jets = `>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>`;
-
-type Content = "." | "#" | "@";
+type Content = "." | "#" | "@" | "-";
 const shapes: Map<number, Content[][]> = new Map();
 shapes.set(1, [[".", ".", "@", "@", "@", "@", "."]]);
 
@@ -61,12 +62,12 @@ const sittingOnRockOrBottom = (tower: Content[][]): boolean => {
         if (nextRowInBounds && tower[i + 1][j] === "#") {
           return true;
         }
-      }
-    }
 
-    // case 2: hitting bottom
-    if (row === tower[tower.length - 1] && containsCurrShape) {
-      return true;
+        // case 2: hitting bottom
+        if (nextRowInBounds && tower[i + 1][j] === "-") {
+          return true;
+        }
+      }
     }
   }
 
@@ -86,32 +87,41 @@ const extendTower = (tower: Content[][], shapeNum: number) => {
 };
 
 const blow = (tower: Content[][], jet: string) => {
-  const direction = jet === ">" ? "right" : "left";
+  const dir = jet === ">" ? "right" : "left";
   const towerCopy = tower.map((arr) => arr.slice());
 
   for (let row = 0; row < tower.length; row++) {
-    for (let col = 0; col < tower[row].length; col++) {
-      if (direction === "right") {
-        // can not blow to the right
-        if (tower[row][tower[row].length - 1] === "@") {
-          return tower;
-        }
+    if (dir === "right") {
+      // from the end to avoid changing the "next" content
+      // #@.
+      for (let col = tower[row].length - 1; col >= 0; col--) {
+        if (tower[row][col] === "@") {
+          let nextIsOutOfBounce = col + 1 >= tower[row].length;
 
-        if (tower[row][col - 1] === "@") {
-          towerCopy[row] = tower[row].slice(0, tower[row].length - 1);
-          towerCopy[row].unshift(".");
+          // can not blow
+          if (nextIsOutOfBounce || tower[row][col + 1] === "#") {
+            // throw copy away
+            return tower;
+          }
+          // shift to the right
+          towerCopy[row][col + 1] = "@";
+          towerCopy[row][col] = ".";
         }
       }
+    }
 
-      if (direction === "left") {
-        // can not blow to the left
-        if (tower[row][0] === "@") {
-          return tower;
-        }
-
+    if (dir === "left") {
+      for (let col = 0; col < tower[row].length; col++) {
         if (tower[row][col] === "@") {
-          towerCopy[row] = tower[row].slice(1, tower[row].length);
-          towerCopy[row].push(".");
+          let nextIsOutOfBounce = col - 1 < 0;
+
+          // can not blow
+          if (nextIsOutOfBounce || tower[row][col - 1] === "#") {
+            return tower;
+          }
+          // shift to the left
+          towerCopy[row][col - 1] = "@";
+          towerCopy[row][col] = ".";
         }
       }
     }
@@ -161,7 +171,7 @@ const trimTower = (tower: Content[][]): Content[][] => {
 };
 
 function simulate(rocksNum: number) {
-  let tower: Content[][] = [];
+  let tower: Content[][] = [["-", "-", "-", "-", "-", "-", "-"]];
   let shapeNum = 0;
   let jetIndex = 0;
 
@@ -171,23 +181,23 @@ function simulate(rocksNum: number) {
     // add rows to beginning of tower so that last rock and new rock are three rows apart
     extendTower(tower, shapeNum);
 
-    // this logic is not correct
-    while (!sittingOnRockOrBottom(tower)) {
-      tower = blow(tower, jets[jetIndex % jets.length]);
-      jetIndex++;
-      tower = moveShape(tower);
-    }
+    while (true) {
+      let jet = jets[jetIndex % jets.length];
+      jetIndex += 1;
+      tower = blow(tower, jet);
 
-    tower = blow(tower, jets[jetIndex % jets.length]);
-    jetIndex++;
+      if (!sittingOnRockOrBottom(tower)) {
+        tower = moveShape(tower);
+      } else {
+        break;
+      }
+    }
 
     tower = shapeToRock(tower);
     tower = trimTower(tower);
   }
 
-  printArrAsString(tower);
-
   return tower;
 }
 
-console.log(simulate(3).length);
+console.log(simulate(2022).length - 1);
