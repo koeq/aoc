@@ -200,4 +200,4 @@ function simulate(rocksNum: number) {
   return tower;
 }
 
-console.log(simulate(2022).length - 1);
+console.log(simulate(1000000000000).length - 1);
