@@ -4,10 +4,6 @@ import { getInput } from "./get-input";
 const input = getInput("./src/20/inputs/input-2.txt")?.split("\n")!;
 input.pop();
 
-// const testInput = `1-3 a: abcde
-// 1-3 b: cdefg
-// 2-9 c: ccccccccc`.split("\n");
-
 interface Parsed {
   low: number;
   high: number;
@@ -27,6 +23,7 @@ const parseInput = (input: string[]): Parsed[] => {
 
 const parsed = parseInput(input);
 
+// 1
 console.log(
   parsed.reduce((acc, curr) => {
     const { low, high, char, password } = curr;
@@ -39,5 +36,26 @@ console.log(
     }
 
     return charCount >= low && charCount <= high ? ++acc : acc;
+  }, 0)
+);
+
+// 2
+console.log(
+  parsed.reduce((acc, curr) => {
+    const { low, high, char, password } = curr;
+    let charCount = 0;
+
+    const lowChar = password[low - 1];
+    const highChar = password[high - 1];
+
+    if (lowChar === char) {
+      charCount++;
+    }
+
+    if (highChar === char) {
+      charCount++;
+    }
+
+    return charCount === 1 ? ++acc : acc;
   }, 0)
 );
