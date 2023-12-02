@@ -2,3 +2,4 @@ node_modules
 dist
 inputs
 tsconfig.json
+*.txt
