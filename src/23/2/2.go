@@ -68,6 +68,19 @@ func getPossibleGamesIdSum(games []Game) {
 	log(sum)
 }
 
+func getGamesPowerSum(games []Game) {
+	sum := 0
+
+	for _, game := range games {
+		rgb := game.rgb
+		r, g, b := rgb[0], rgb[1], rgb[2]
+
+		sum += r * g * b
+	}
+
+	log(sum)
+}
+
 func main() {
 	file, err := os.Open("input.txt")
 
@@ -104,5 +117,8 @@ func main() {
 		games = append(games, Game{id: gameId, rgb: maxGameRGB})
 	}
 
+	log("1:")
 	getPossibleGamesIdSum(games)
+	log("2:")
+	getGamesPowerSum(games)
 }
