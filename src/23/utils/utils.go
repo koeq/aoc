@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"os"
+	"strings"
 )
 
 func CreateGetLine(file *os.File) func() (string, error) {
@@ -36,4 +37,13 @@ func GetLines(file *os.File) ([][]rune, error) {
 	}
 
 	return lines, nil
+}
+
+func GetSplittedLines(fileName string, delimiter string) []string {
+	content, err := os.ReadFile(fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	return strings.Split(string(content), delimiter)
 }
