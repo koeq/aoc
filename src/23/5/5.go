@@ -8,6 +8,23 @@ import (
 	"strings"
 )
 
+func createSeeds(seedsNumStr string) []int {
+	seedsRanges := numStrToNumArr(seedsNumStr)
+	var seeds []int
+
+	for i := 0; i < len(seedsRanges)-1; i += 2 {
+		start := seedsRanges[i]
+		rangeCount := seedsRanges[i+1]
+
+		fmt.Println("still building seeds")
+		for s := 0; s < rangeCount; s++ {
+			seeds = append(seeds, start+s)
+		}
+	}
+
+	return seeds
+}
+
 func numStrToNumArr(numStr string) []int {
 	var nums []int
 
@@ -44,6 +61,7 @@ func numStrToNumArrOf3(numStr string) [3]int {
 
 func getMap(mapStrings []string) [][3]int {
 	var mapArr [][3]int
+	fmt.Println("building map")
 	for i, seedToSoil := range mapStrings {
 		if i == 0 {
 			continue
@@ -59,6 +77,7 @@ func getMap(mapStrings []string) [][3]int {
 func mapToLocation(mapsArr [7][][3]int, seed int) int {
 	curr := seed
 
+	fmt.Println("mapping to location")
 	for _, maps := range mapsArr {
 		for _, m := range maps {
 			sourceStart := m[1]
@@ -67,20 +86,12 @@ func mapToLocation(mapsArr [7][][3]int, seed int) int {
 
 			sourceEnd := sourceStart + rangeLength - 1
 
-			// curr outside mapping range
-			if curr < sourceStart || curr > sourceEnd {
-				continue
-			}
+			// curr inside range
+			if curr >= sourceStart && curr <= sourceEnd {
+				offset := curr - sourceStart
 
-			for i := 0; sourceStart+i <= sourceEnd; i++ {
-				if curr == sourceStart+i {
-					curr = destinationStart + i
-					// break if correct mapping was found
-					break
-				}
+				return destinationStart + offset
 			}
-			// go to next map
-			break
 		}
 	}
 
@@ -90,7 +101,9 @@ func mapToLocation(mapsArr [7][][3]int, seed int) int {
 func main() {
 	splittedLines := utils.GetSplittedLines("input.txt", "\n\n")
 	seedsNumStr := strings.Split(splittedLines[0], ":")[1]
-	seeds := numStrToNumArr(seedsNumStr)
+	seeds := createSeeds(seedsNumStr)
+
+	fmt.Println("all seed built")
 
 	// data structure -> array of 7 mapsArr, containing a slice of unknown length which holds all the mappings which are arrays of 3 containing the two ranges and the offset
 	var mapsArr [7][][3]int
