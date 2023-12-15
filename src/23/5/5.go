@@ -25,6 +25,21 @@ func createSeeds(seedsNumStr string) []int {
 	return seeds
 }
 
+func createSeedRanges(seedsNumStr string) [][3]int {
+	seedsRanges := numStrToNumArr(seedsNumStr)
+	var ranges [][3]int
+
+	for i := 0; i < len(seedsRanges)-1; i += 2 {
+		start := seedsRanges[i]
+		rangeLength := seedsRanges[i+1]
+		end := start + rangeLength - 1
+
+		ranges = append(ranges, [3]int{start, end, rangeLength})
+	}
+
+	return ranges
+}
+
 func numStrToNumArr(numStr string) []int {
 	var nums []int
 
@@ -90,7 +105,8 @@ func mapToLocation(mapsArr [7][][3]int, seed int) int {
 			if curr >= sourceStart && curr <= sourceEnd {
 				offset := curr - sourceStart
 
-				return destinationStart + offset
+				curr = destinationStart + offset
+				break
 			}
 		}
 	}
@@ -98,10 +114,101 @@ func mapToLocation(mapsArr [7][][3]int, seed int) int {
 	return curr
 }
 
+func mapSeedRangeToLocation(mapsArr [7][][3]int, seedRange [3]int) int {
+	seedRanges := [][3]int{seedRange}
+
+	for _, maps := range mapsArr {
+		var newSeedRanges [][3]int
+
+		for _, seedRange := range seedRanges {
+			mapped := false
+
+			for _, mapEntry := range maps {
+				destinationStart := mapEntry[0]
+				mapStart := mapEntry[1]
+				mapEnd := mapStart + mapEntry[2] - 1
+				seedStart := seedRange[0]
+				seedEnd := seedStart + seedRange[2] - 1
+
+				if seedEnd >= mapStart && seedStart <= mapEnd {
+					mapped = true
+					overlapStart := max(seedStart, mapStart)
+					overlapEnd := min(seedEnd, mapEnd)
+					overlapLength := overlapEnd - overlapStart + 1
+
+					newStart := destinationStart + (overlapStart - mapStart)
+					newSeedRanges = append(newSeedRanges, [3]int{newStart, newStart + overlapLength - 1, overlapLength})
+
+					// Handle the part before the overlap
+					if seedStart < overlapStart {
+						handleUnmappedRange(&newSeedRanges, maps, seedStart, overlapStart-1)
+					}
+
+					// Handle the part after the overlap
+					if seedEnd > overlapEnd {
+						handleUnmappedRange(&newSeedRanges, maps, overlapEnd+1, seedEnd)
+					}
+				}
+			}
+
+			// If this range was not mapped, carry it over to the next mapping as is.
+			if !mapped {
+				newSeedRanges = append(newSeedRanges, seedRange)
+			}
+		}
+
+		// Prepare the seedRanges for the next iteration.
+		seedRanges = newSeedRanges
+	}
+
+	lowestLocation := math.MaxInt
+	for _, rangeItem := range seedRanges {
+		if rangeItem[0] < lowestLocation {
+			lowestLocation = rangeItem[0]
+		}
+	}
+
+	return lowestLocation
+}
+
+func handleUnmappedRange(newSeedRanges *[][3]int, maps [][3]int, start, end int) {
+	isMapped := false
+
+	for _, m := range maps {
+		if isInRange(start, m[1], m[1]+m[2]-1) || isInRange(end, m[1], m[1]+m[2]-1) {
+			isMapped = true
+			break
+		}
+	}
+	if !isMapped {
+		*newSeedRanges = append(*newSeedRanges, [3]int{start, end, end - start + 1})
+	}
+}
+
+func isInRange(num, start, end int) bool {
+	return num >= start && num <= end
+}
+
+// max returns the maximum of two integers
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// min returns the minimum of two integers
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func main() {
 	splittedLines := utils.GetSplittedLines("input.txt", "\n\n")
 	seedsNumStr := strings.Split(splittedLines[0], ":")[1]
-	seeds := createSeeds(seedsNumStr)
+	seedRanges := createSeedRanges(seedsNumStr)
 
 	fmt.Println("all seed built")
 
@@ -126,8 +233,9 @@ func main() {
 
 	lowestLocation := math.MaxInt
 
-	for _, seed := range seeds {
-		location := mapToLocation(mapsArr, seed)
+	for _, seedRange := range seedRanges {
+
+		location := mapSeedRangeToLocation(mapsArr, seedRange)
 
 		if location < lowestLocation {
 			lowestLocation = location
