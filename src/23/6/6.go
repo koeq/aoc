@@ -12,7 +12,7 @@ type Race struct {
 	distance int
 }
 
-func parseRaces() []Race {
+func parseRacesOne() []Race {
 	racesInput := utils.GetSplittedLines("input.txt", "\n")
 
 	t := strings.Fields(strings.Split(racesInput[0], ":")[1])
@@ -37,9 +37,38 @@ func parseRaces() []Race {
 	return races
 }
 
+func parseRacesTwo() []Race {
+	racesInput := utils.GetSplittedLines("input.txt", "\n")
+
+	t := strings.Fields(strings.Split(racesInput[0], ":")[1])
+	d := strings.Fields(strings.Split(racesInput[1], ":")[1])
+
+	var timeStr string
+	var distanceStr string
+
+	for i := 0; i < len(t); i++ {
+		timeStr += t[i]
+		distanceStr += d[i]
+
+	}
+
+	time, err := strconv.Atoi(timeStr)
+	if err != nil {
+		panic(err)
+	}
+
+	distance, err := strconv.Atoi(distanceStr)
+	if err != nil {
+		panic(err)
+	}
+
+	return []Race{{time, distance}}
+}
+
 func main() {
 	count := 1
-	races := parseRaces()
+	// races := parseRacesOne()
+	races := parseRacesTwo()
 
 	for _, race := range races {
 		winningCount := 0
