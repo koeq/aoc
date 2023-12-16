@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc/sort"
 	"bufio"
 	"fmt"
 	"os"
@@ -127,8 +128,46 @@ func parseHandsInput(file *os.File) []hand {
 	return hands
 }
 
+// returns:
+//
+// 1 if x > y
+//
+// 0 if x == y
+//
+// -1 if x < y
+func compareHands(x, y hand) int {
+	xHandScore := handTypes[x.handType]
+	yHandScore := handTypes[y.handType]
+
+	if xHandScore > yHandScore {
+		return 1
+	}
+
+	if xHandScore < yHandScore {
+		return -1
+	}
+
+	for i, _ := range x.cards {
+		xCard := string(x.cards[i])
+		yCard := string(y.cards[i])
+
+		xCardScore := cardTypes[xCard]
+		yCardScore := cardTypes[yCard]
+
+		if xCardScore > yCardScore {
+			return 1
+		}
+
+		if xCardScore < yCardScore {
+			return -1
+		}
+	}
+
+	return 0
+}
+
 func main() {
-	file, err := os.Open("input_test.txt")
+	file, err := os.Open("input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -136,5 +175,14 @@ func main() {
 	defer file.Close()
 
 	hands := parseHandsInput(file)
-	fmt.Println(hands)
+	sort.Quicksort(hands, 0, len(hands)-1, compareHands)
+
+	counter := 0
+
+	for i, hand := range hands {
+		rank := i + 1
+		counter += hand.bid * rank
+	}
+
+	fmt.Println(counter)
 }
