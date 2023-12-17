@@ -9,11 +9,23 @@ import (
 	"strings"
 )
 
-type hand struct {
+type Hand struct {
 	cards    string
 	bid      int
-	handType string
+	handType HandType
 }
+
+type HandType string
+
+const (
+	HighCard     HandType = "high-card"
+	OnePair      HandType = "one-pair"
+	TwoPair      HandType = "two-pair"
+	ThreeOfAKind HandType = "three-of-a-kind"
+	FullHouse    HandType = "full-house"
+	FourOfAKind  HandType = "four-of-a-kind"
+	FiveOfAKind  HandType = "five-of-a-kind"
+)
 
 var cardTypes = map[string]int{
 	"2": 2,
@@ -25,13 +37,14 @@ var cardTypes = map[string]int{
 	"8": 8,
 	"9": 9,
 	"T": 10,
-	"J": 11,
+	// updated for 7.2
+	"J": 1,
 	"Q": 12,
 	"K": 13,
 	"A": 14,
 }
 
-var handTypes = map[string]int{
+var handTypes = map[HandType]int{
 	"high-card":       1,
 	"one-pair":        2,
 	"two-pair":        3,
@@ -41,7 +54,7 @@ var handTypes = map[string]int{
 	"five-of-a-kind":  7,
 }
 
-func getHandType(cards string) (handtype string) {
+func getHandType(cards string) (handtype HandType, jCount int) {
 	cardCount := map[string]int{
 		"2": 0,
 		"3": 0,
@@ -62,16 +75,23 @@ func getHandType(cards string) (handtype string) {
 		cardCount[string(card)]++
 	}
 
+	jCount = cardCount["J"]
+
 	var hasThree, hasPair bool
 	pairCount := 0
 
-	for _, count := range cardCount {
+	for cardType, count := range cardCount {
+		// Skip jokers
+		if cardType == "J" {
+			continue
+		}
+
 		if count == 5 {
-			return "five-of-a-kind"
+			return FiveOfAKind, jCount
 		}
 
 		if count == 4 {
-			return "four-of-a-kind"
+			return FourOfAKind, jCount
 		}
 
 		if count == 3 {
@@ -86,39 +106,101 @@ func getHandType(cards string) (handtype string) {
 
 	if hasThree {
 		if !hasPair {
-			return "three-of-a-kind"
+			return ThreeOfAKind, jCount
 		}
 
-		return "full-house"
+		return FullHouse, jCount
 	}
 
 	if pairCount == 2 {
-		return "two-pair"
+		return TwoPair, jCount
 	}
 
 	if hasPair {
-		return "one-pair"
+		return OnePair, jCount
 	}
 
-	return "high-card"
+	return HighCard, jCount
 }
 
-func parseHandsInput(file *os.File) []hand {
-	var hands []hand
+// only possible without Jokers
+// high-card       -> 0J
+// two-pair        -> 0J
+
+// possible with one/multiple jokers
+// one-pair 			 -> high-card + 1J
+// three-of-a-kind -> one-pair + 1J, high-card + 2J
+// full-house      ->  two-pair + 1J
+// four-of-a-kind  -> three-of-a-kind + 1J, one-pair + 2J, high-card + 3J
+// five-of-a-kind  -> four-of-a-kind + 1J, three-of-a-kind + 2J, one-pair + 3J, high-card + 4J
+func getHandTypeWithJs(h HandType, jCount int) (handType HandType) {
+	// apply joker transformations
+	switch h {
+	case HighCard:
+		switch jCount {
+		case 1:
+			return OnePair
+		case 2:
+			return ThreeOfAKind
+		case 3:
+			return FourOfAKind
+		case 4:
+			return FiveOfAKind
+		case 5:
+			return FiveOfAKind
+		}
+
+	case OnePair:
+		switch jCount {
+		case 1:
+			return ThreeOfAKind
+		case 2:
+			return FourOfAKind
+		case 3:
+			return FiveOfAKind
+		}
+
+	case TwoPair:
+		switch jCount {
+		case 1:
+			return FullHouse
+		}
+
+	case ThreeOfAKind:
+		switch jCount {
+		case 1:
+			return FourOfAKind
+		case 2:
+			return FiveOfAKind
+		}
+
+	case FourOfAKind:
+		switch jCount {
+		case 1:
+			return FiveOfAKind
+		}
+	}
+
+	return h
+}
+
+func parseHandsInput(file *os.File) []Hand {
+	var hands []Hand
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
 		line := scanner.Text()
 		splittedLine := strings.Fields(line)
 		cards := splittedLine[0]
-		handType := getHandType(cards)
+		h, jCount := getHandType(cards)
+		handType := getHandTypeWithJs(h, jCount)
 
 		bid, err := strconv.Atoi(splittedLine[1])
 		if err != nil {
 			panic(err)
 		}
 
-		hands = append(hands, hand{cards, bid, handType})
+		hands = append(hands, Hand{cards, bid, handType})
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -135,7 +217,7 @@ func parseHandsInput(file *os.File) []hand {
 // 0 if x == y
 //
 // -1 if x < y
-func compareHands(x, y hand) int {
+func compareHands(x, y Hand) int {
 	xHandScore := handTypes[x.handType]
 	yHandScore := handTypes[y.handType]
 
