@@ -50,7 +50,8 @@ func getNextSequence(sequence []int) (next []int, allZeros bool) {
 
 	return next, allZeros
 }
-func getExtrapolated(sequence []int) int {
+
+func getSequenceSeries(sequence []int) [][]int {
 	var allZeros bool
 	var sequenceSeries [][]int
 
@@ -67,6 +68,12 @@ func getExtrapolated(sequence []int) int {
 			break
 		}
 	}
+
+	return sequenceSeries
+}
+
+func getExtrapolatedRight(sequence []int) int {
+	sequenceSeries := getSequenceSeries(sequence)
 
 	// add addtitional zero
 	lastSeries := &sequenceSeries[len(sequenceSeries)-1]
@@ -86,6 +93,27 @@ func getExtrapolated(sequence []int) int {
 	return sequenceSeries[0][len(sequenceSeries[0])-1]
 }
 
+func getExtrapolatedLeft(sequence []int) int {
+	sequenceSeries := getSequenceSeries(sequence)
+
+	// add addtitional zero
+	lastSeries := &sequenceSeries[len(sequenceSeries)-1]
+	*lastSeries = append([]int{0}, *lastSeries...)
+
+	// extrapolate prev value in next sequence
+	for i := len(sequenceSeries) - 1; i >= 1; i-- {
+		currSeries := sequenceSeries[i]
+		nextSeries := &sequenceSeries[i-1]
+
+		currFirstNum := currSeries[0]
+		nextFirstNum := (*nextSeries)[0]
+
+		*nextSeries = append([]int{nextFirstNum - currFirstNum}, *nextSeries...)
+	}
+
+	return sequenceSeries[0][0]
+}
+
 func main() {
 	file, err := os.Open(FILE_PATH)
 	if err != nil {
@@ -97,7 +125,7 @@ func main() {
 	var extrapolatedNums []int
 
 	for _, sequence := range sequences {
-		extrapolatedNums = append(extrapolatedNums, getExtrapolated(sequence))
+		extrapolatedNums = append(extrapolatedNums, getExtrapolatedLeft(sequence))
 	}
 
 	sum := 0
