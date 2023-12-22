@@ -47,3 +47,25 @@ func GetSplittedLines(fileName string, delimiter string) []string {
 
 	return strings.Split(string(content), delimiter)
 }
+
+func IsValidGridIndex(grid [][]string, x, y int) bool {
+	if y < 0 || y >= len(grid) {
+		return false
+	}
+
+	if x < 0 || x >= len(grid[y]) {
+		return false
+	}
+
+	return true
+}
+
+func Contains[T comparable](slice []T, element T) bool {
+	for _, s := range slice {
+		if s == element {
+			return true
+		}
+	}
+
+	return false
+}
