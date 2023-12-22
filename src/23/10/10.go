@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const FILE_PATH = "input.txt"
+const FILE_PATH = "input_test.txt"
 
 type Vertex struct {
 	x int
@@ -170,9 +170,6 @@ func walk(tiles [][]string, visited *[][]bool, vertex Vertex, start Vertex, path
 		walk(tiles, visited, nextVertex, start, pathLength+1)
 	}
 
-	if tiles[vertex.y][vertex.x] != "S" {
-		(*visited)[vertex.y][vertex.x] = false
-	}
 }
 
 func main() {
@@ -190,4 +187,5 @@ func main() {
 	for _, length := range successfulPathsLengths {
 		fmt.Println("Farthest:", length/2)
 	}
+
 }
